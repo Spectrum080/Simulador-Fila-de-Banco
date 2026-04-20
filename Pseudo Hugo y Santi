@@ -1,0 +1,373 @@
+//   SIMULADOR DE FILA DE BANCO ---- Pseudocodigo
+//   Ingeniería en Sistemas Computacionales
+//   Integrantes: Victor Hugo Luna Monroy
+//                Santiago Antonio Rodriguez Chua
+//                Jorge Arturo Tapia Perez
+//                Omar Velasco Hernandez
+//                Carlos Jose Gutierrez Cardenas 
+// --------------------------------------------------------
+//
+//   37 CLIENTES en total:
+//     1- 5  → Clientes NORMALES (10, 20, 30, 40, 50)
+//     6     → Cliente NUEVO  1
+//     7-11  → Clientes NORMALES (60, 70, 80, 90, 100)
+//    12     → Cliente VIP    1
+//    13-17  → Clientes NORMALES (110, 120, 130, 140, 150)
+//    18     → Cliente NUEVO  2
+//    19-23  → Clientes NORMALES (160, 170, 180, 190, 200)
+//    24     → Cliente VIP    2
+//    25-29  → Clientes NORMALES (210, 220, 230, 240, 250)
+//    30     → Cliente NUEVO  3
+//    31-35  → Clientes NORMALES (260, 270, 280, 290, 300)
+//    36     → Cliente VIP    3
+//    37     → Clientes NORMALES (310)
+//----------------------------------------------------------------------
+//   La asignacion de IDs, va a ser esta:
+//     VIP    → 001, 002, 003
+//     NUEVO  → 1, 2, 3
+//     NORMAL → 10, 20, 30, ..., 310
+//-----------------------------------------------------------------------------------------
+//   Este es el tiempo que cada usuario esperara antes de "hartarse" e irse de la fila:
+//     VIP    → 8 min
+//     NUEVO  → 6 min
+//     NORMAL → 10 min
+//------------------------------------------------------
+//   CRONOMETRO: inicia en 1 y suma +1 cada tick
+
+
+Proceso SimuladorFilaBanco
+
+	Dimension tipo(37)
+	Dimension id_num(37)
+	Dimension t_llegada(37)
+	Dimension t_atencion(37)
+	Dimension t_espera(37)
+	Dimension t_salida(37)
+	Dimension atendido(37)
+	Dimension se_fue(37)
+	Dimension cola(37)
+
+	Definir i, j, k             Como Entero
+	Definir reloj, tam_cola     Como Entero
+	Definir cont_vip, cont_nuevo, cont_norm Como Entero
+	Definir cursor_llegada      Como Entero
+	Definir rand_ll, rand_at    Como Entero
+	Definir caja_libre          Como Entero
+	Definir fin_atencion        Como Entero
+	Definir cliente_en_caja     Como Entero
+	Definir espera_act          Como Entero
+	Definir temp_idx            Como Entero
+	Definir hay_trabajo         Como Entero
+	Definir total_at, total_sf  Como Entero
+	Definir cvip, cnuevo, cnorm Como Entero
+	Definir svip, snuevo, snorm, stotal Como Entero
+	Definir pvip, pnuevo, pnorm, ptotal Como Entero
+
+	
+	//   PASO 1  hacer a los 37 clientes
+	
+
+	cont_vip       <- 0
+	cont_nuevo     <- 0
+	cont_norm      <- 0
+	cursor_llegada <- 0
+
+	Escribir "----------------------------------------"
+	Escribir "║   SIMULADOR DE FILA DE BANCO         ║"
+	Escribir "----------------------------------------"
+	Escribir "-----------------------------"
+	Escribir "Generando 37 clientes..."
+	Escribir "-----------------------------"
+
+	Para i <- 1 Hasta 37 Con Paso 1
+
+		atendido(i) <- 0
+		se_fue(i)   <- 0
+		t_espera(i) <- 0
+		t_salida(i) <- 0
+
+		// Llegada acumulada, pasos de 1 a 3 minutos
+		rand_ll        <- azar(3) + 1
+		cursor_llegada <- cursor_llegada + rand_ll
+		t_llegada(i)   <- cursor_llegada
+
+		//  Aqui solo estoy asignando una posicion fija de cada cuanto salen VIPs o Nuevos ──
+		// NUEVO en lugares 6, 18 y 30
+		Si i = 6 O i = 18 O i = 30 Entonces
+			cont_nuevo    <- cont_nuevo + 1
+			tipo(i)       <- 2
+			id_num(i)     <- cont_nuevo
+			rand_at       <- azar(4) + 3     // 3 a 6 min
+			t_atencion(i) <- rand_at
+
+		// VIP en lugares 12, 24 y 36
+		SiNo
+			Si i = 12 O i = 24 O i = 36 Entonces
+				cont_vip      <- cont_vip + 1
+				tipo(i)       <- 1
+				id_num(i)     <- cont_vip
+				rand_at       <- azar(3) + 2     // 2 a 4 min
+				t_atencion(i) <- rand_at
+
+			// NORMAL en el resto de lugares
+			SiNo
+				cont_norm     <- cont_norm + 1
+				tipo(i)       <- 3
+				id_num(i)     <- cont_norm * 10
+				rand_at       <- azar(5) + 3     // 3 a 7 min
+				t_atencion(i) <- rand_at
+			FinSi
+		FinSi
+
+	FinPara
+
+	//  Tabla de clientes 
+	Escribir "Lista de clientes registrados:"
+	Escribir "----------------------------------------------------"
+	Escribir " N  | ID    | TIPO    | LLEGA | ATENCION | ESP.MAX"
+	Escribir "----------------------------------------------------"
+	Para i <- 1 Hasta 37 Con Paso 1
+		Si tipo(i) = 1 Entonces
+			Escribir i, " | 00", id_num(i), "  | VIP    | min ", t_llegada(i), " | ", t_atencion(i), " min | 8 min"
+		SiNo
+			Si tipo(i) = 2 Entonces
+				Escribir i, " | ", id_num(i), "     | NUEVO  | min ", t_llegada(i), " | ", t_atencion(i), " min | 6 min"
+			SiNo
+				Escribir i, " | ", id_num(i), "   | NORMAL | min ", t_llegada(i), " | ", t_atencion(i), " min | 10 min"
+			FinSi
+		FinSi
+	FinPara
+	Escribir "-------------------------------------------------"
+	Escribir "-------------------------------------------------"
+
+	
+	//   PASO 2  simulacion
+	
+
+	Escribir "--------------------------------------"
+	Escribir "║   Iniciando simulacion               ║"
+	Escribir "║   Reloj empieza en: minuto 1         ║"
+	Escribir "--------------------------------------"
+	
+
+	reloj           <- 1
+	tam_cola        <- 0
+	caja_libre      <- 1
+	fin_atencion    <- 0
+	cliente_en_caja <- 0
+
+	Repetir
+
+		Escribir "=== Minuto ", reloj, " ==="
+
+		// detectar llegadas 
+		Para i <- 1 Hasta 37 Con Paso 1
+			Si t_llegada(i) = reloj Y atendido(i) = 0 Y se_fue(i) = 0 Entonces
+
+				tam_cola       <- tam_cola + 1
+				cola(tam_cola) <- i
+
+				//  hacia el frente de la fila  por prioridad
+				j <- tam_cola
+				Mientras j > 1 Hacer
+					Si tipo(cola(j)) < tipo(cola(j-1)) Entonces
+						temp_idx    <- cola(j)
+						cola(j)     <- cola(j-1)
+						cola(j-1)   <- temp_idx
+						j           <- j - 1
+					SiNo
+						j <- 0
+					FinSi
+				FinMientras
+
+				Si tipo(i) = 1 Entonces
+					Escribir "  [LLEGO] VIP   ID: 00", id_num(i), "  | espera max: 8 min"
+				SiNo
+					Si tipo(i) = 2 Entonces
+						Escribir "  [LLEGO] NUEVO  ID: ", id_num(i), "    | espera max: 6 min"
+					SiNo
+						Escribir "  [LLEGO] NORMAL ID: ", id_num(i), "  | espera max: 10 min"
+					FinSi
+				FinSi
+
+			FinSi
+		FinPara
+
+		// Revisar paciencia de la fila
+		Para j <- 1 Hasta tam_cola Con Paso 1
+			espera_act <- reloj - t_llegada(cola(j))
+			Si tipo(cola(j)) = 1 Y espera_act >= 8 Entonces
+				se_fue(cola(j)) <- 1
+				Escribir "  [SE FUE] VIP    ID: 00", id_num(cola(j)), "  espero ", espera_act, " min (max 8)"
+			SiNo
+				Si tipo(cola(j)) = 2 Y espera_act >= 6 Entonces
+					se_fue(cola(j)) <- 1
+					Escribir "  [SE FUE] NUEVO  ID: ", id_num(cola(j)), "    espero ", espera_act, " min (max 6)"
+				SiNo
+					Si tipo(cola(j)) = 3 Y espera_act >= 10 Entonces
+						se_fue(cola(j)) <- 1
+						Escribir "  [SE FUE] NORMAL ID: ", id_num(cola(j)), "  espero ", espera_act, " min (max 10)"
+					FinSi
+				FinSi
+			FinSi
+		FinPara
+
+		// Reducir la fila (quitar a los que se fueron)
+		k <- 0
+		Para j <- 1 Hasta tam_cola Con Paso 1
+			Si se_fue(cola(j)) = 0 Y atendido(cola(j)) = 0 Entonces
+				k       <- k + 1
+				cola(k) <- cola(j)
+			FinSi
+		FinPara
+		tam_cola <- k
+
+		// Cuestionar si ¿Terminó la atención actual? 
+		Si caja_libre = 0 Y reloj >= fin_atencion Entonces
+			atendido(cliente_en_caja) <- 1
+			t_salida(cliente_en_caja) <- reloj
+			Escribir "---------------------------------------------"
+			Escribir "  [ATENDIDO] --------------------------------"
+			Si tipo(cliente_en_caja) = 1 Entonces
+				Escribir "   Tipo    : VIP"
+				Escribir "   ID      : 00", id_num(cliente_en_caja)
+			SiNo
+				Si tipo(cliente_en_caja) = 2 Entonces
+					Escribir "   Tipo    : NUEVO"
+					Escribir "   ID      : ", id_num(cliente_en_caja)
+				SiNo
+					Escribir "   Tipo    : NORMAL"
+					Escribir "   ID      : ", id_num(cliente_en_caja)
+				FinSi
+			FinSi
+			Escribir "   Llego   : min ", t_llegada(cliente_en_caja)
+			Escribir "   Espero  : ", t_espera(cliente_en_caja), " min en fila"
+			Escribir "   Salio   : min ", t_salida(cliente_en_caja)
+			Escribir "------------------------------------------------------------"
+			Escribir "------------------------------------------------------------"
+			caja_libre <- 1
+		FinSi
+
+		// El que sigueeeee
+		Si caja_libre = 1 Y tam_cola > 0 Entonces
+			cliente_en_caja           <- cola(1)
+			t_espera(cliente_en_caja) <- reloj - t_llegada(cliente_en_caja)
+			fin_atencion              <- reloj + t_atencion(cliente_en_caja)
+			caja_libre                <- 0
+
+			Si tipo(cliente_en_caja) = 1 Entonces
+				Escribir "  [EN CAJA] VIP    ID: 00", id_num(cliente_en_caja), " | termina min ", fin_atencion
+			SiNo
+				Si tipo(cliente_en_caja) = 2 Entonces
+					Escribir "  [EN CAJA] NUEVO  ID: ", id_num(cliente_en_caja), "    | termina min ", fin_atencion
+				SiNo
+					Escribir "  [EN CAJA] NORMAL ID: ", id_num(cliente_en_caja), "  | termina min ", fin_atencion
+				FinSi
+			FinSi
+
+			// Desplazar fila
+			Para j <- 1 Hasta tam_cola - 1 Con Paso 1
+				cola(j) <- cola(j + 1)
+			FinPara
+			tam_cola <- tam_cola - 1
+		FinSi
+
+		Escribir "  Cola: ", tam_cola, " clientes esperando"
+		Escribir ""
+
+		//  Avanzar reloj 1 tick 
+		reloj <- reloj + 1
+
+		//  ¿Queda trabajo?
+		hay_trabajo <- 0
+		Si caja_libre = 0 Entonces
+			hay_trabajo <- 1
+		FinSi
+		Si tam_cola > 0 Entonces
+			hay_trabajo <- 1
+		FinSi
+		Para i <- 1 Hasta 37 Con Paso 1
+			Si atendido(i) = 0 Y se_fue(i) = 0 Entonces
+				hay_trabajo <- 1
+			FinSi
+		FinPara
+
+	Hasta Que hay_trabajo = 0
+
+	
+	//   PASO 3  Reporte final
+	
+
+	total_at <- 0
+	total_sf <- 0
+	cvip     <- 0
+	cnuevo   <- 0
+	cnorm    <- 0
+	svip     <- 0
+	snuevo   <- 0
+	snorm    <- 0
+	stotal   <- 0
+
+	Para i <- 1 Hasta 37 Con Paso 1
+		Si atendido(i) = 1 Entonces
+			total_at <- total_at + 1
+			stotal   <- stotal + t_espera(i)
+			Si tipo(i) = 1 Entonces
+				cvip <- cvip + 1
+				svip <- svip + t_espera(i)
+			SiNo
+				Si tipo(i) = 2 Entonces
+					cnuevo <- cnuevo + 1
+					snuevo <- snuevo + t_espera(i)
+				SiNo
+					cnorm <- cnorm + 1
+					snorm <- snorm + t_espera(i)
+				FinSi
+			FinSi
+		FinSi
+		Si se_fue(i) = 1 Entonces
+			total_sf <- total_sf + 1
+		FinSi
+	FinPara
+
+	// Promedios enteros con trunc
+	Si total_at > 0 Entonces
+		ptotal <- trunc(stotal / total_at)
+	SiNo
+		ptotal <- 0
+	FinSi
+	Si cvip > 0 Entonces
+		pvip <- trunc(svip / cvip)
+	SiNo
+		pvip <- 0
+	FinSi
+	Si cnuevo > 0 Entonces
+		pnuevo <- trunc(snuevo / cnuevo)
+	SiNo
+		pnuevo <- 0
+	FinSi
+	Si cnorm > 0 Entonces
+		pnorm <- trunc(snorm / cnorm)
+	SiNo
+		pnorm <- 0
+	FinSi
+
+	Escribir "---------------------------------------------------"
+	Escribir "║      Reporte final de la simulacion         ║"
+	Escribir "---------------------------------------------------"
+	Escribir "  Clientes generados     : 37"
+	Escribir "  Clientes VIP           : 3"
+	Escribir "  Clientes NUEVO         : 3"
+	Escribir "  Clientes NORMAL        : 31"
+	Escribir "  Clientes atendidos     : ", total_at
+	Escribir "  Clientes que se fueron : ", total_sf
+	Escribir "------------------------------------------------------------------------"
+	Escribir "  Espera promedio total  : ", ptotal, " min"
+	Escribir "  Espera promedio VIP    : ", pvip,   " min  (", cvip,   " atendidos)"
+	Escribir "  Espera promedio NUEVO  : ", pnuevo, " min  (", cnuevo, " atendidos)"
+	Escribir "  Espera promedio NORMAL : ", pnorm,  " min  (", cnorm,  " atendidos)"
+	Escribir "------------------------------------------------------------------------"
+	Escribir "  Reloj al terminar      : min ", reloj
+	Escribir "------------------------------------------------"
+
+FinProceso
