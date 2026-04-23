@@ -1,0 +1,160 @@
+  Definir i, j, k Como Entero // i Contador total de clientes generado, j Variable auxiliar para recorrer la cola o arreglos, k Se usa para reconstruir la cola al eliminar clientes.
+    Definir reloj, tam_cola Como Entero //reloj Tiempo actual de la simulación, tam_cola Número actual de clientes en la cola
+    Definir cont_vip, cont_nuevo, cont_norm Como Entero //Número total de clientes
+    Definir caja_libre, fin_atencion, cliente_en_caja Como Entero //caja_libre estado de la caja 0-libre 1-ocupada //fin_atencion Minuto en el que terminará el cliente actual //cliente_en_caja Índice del cliente que está siendo atendido.
+    Definir espera_act, temp_idx Como Entero // espera_act Tiempo actual que lleva esperando un cliente en la cola. // temp_idx  Variable temporal para intercambiar posiciones en la cola
+    Definir tiempo_max Como Entero //Tiempo total que dura la simulación en minutos
+    Definir prob_llegada Como Entero //Probabilidad (%) de que llegue un cliente en cada minuto.
+    Definir tipo_rand Como Entero //Número aleatorio usado para asignar el tipo de cliente.
+	
+    // Inicialización
+    i <- 0
+    reloj <- 1
+    tam_cola <- 0
+    caja_libre <- 1
+	
+    cont_vip <- 0
+    cont_nuevo <- 0
+    cont_norm <- 0
+	
+    // CONFIGURACIÓN
+    tiempo_max <- 400        // duración de la simulación
+    prob_llegada <- 40       // porcentaje de probabilidad de llegada por minuto
+	
+    Escribir "--------------------------------------"
+    Escribir " SIMULADOR DE FILA DE BANCO (INFINITO)"
+    Escribir "--------------------------------------"
+	
+    Repetir
+		
+        Escribir "=== Minuto ", reloj, " ===" //printf para los minutos en el reloj, reloj se inicializa en 1
+		
+        // GENERAR CLIENTE ALEATORIO
+        Si azar(100) < prob_llegada Entonces //azar genera un numero aleatorio entre 0 y 100 si este mismo numero es menor a 40 se genera un cliente si no lo es no se generara
+			
+            i <- i + 1 //contador de clientes totales
+ 			
+            t_llegada(i) <- reloj //Inicialización de datos sobre el cliente 
+            atendido(i) <- 0
+            se_fue(i) <- 0
+			
+            tipo_rand <- azar(3) + 1 //Generación de tipo de cliente
+            tipo(i) <- tipo_rand
+			
+            Segun tipo_rand Hacer //Contadores distintos segun el tipo de usuario y tiempo de tardansa
+				
+                1: // VIP
+                    cont_vip <- cont_vip + 1
+                    id_num(i) <- cont_vip
+                    t_atencion(i) <- azar(3) + 2
+					
+                2: // NUEVO
+                    cont_nuevo <- cont_nuevo + 1
+                    id_num(i) <- cont_nuevo
+                    t_atencion(i) <- azar(4) + 3
+					
+                3: // NORMAL
+                    cont_norm <- cont_norm + 1
+                    id_num(i) <- cont_norm * 10
+                    t_atencion(i) <- azar(5) + 3
+					
+            FinSegun
+			
+            // Agregar a la cola
+            tam_cola <- tam_cola + 1
+            cola(tam_cola) <- i
+			
+            // ORDENAR POR PRIORIDAD
+            j <- tam_cola
+            Mientras j > 1 Hacer
+                Si tipo(cola(j)) < tipo(cola(j-1)) Entonces
+                    temp_idx <- cola(j)
+                    cola(j) <- cola(j-1)
+                    cola(j-1) <- temp_idx
+                    j <- j - 1
+                SiNo
+                    j <- 0
+                FinSi
+            FinMientras
+			
+            Escribir "  [LLEGO] Cliente tipo ", tipo(i), " ID: ", id_num(i)
+			
+        FinSi
+		
+		
+        // VERIFICAR SI SE VAN
+        Para j <- 1 Hasta tam_cola Con Paso 1
+			
+            espera_act <- reloj - t_llegada(cola(j))
+			
+            Si tipo(cola(j)) = 1 Y espera_act >= 8 Entonces
+                se_fue(cola(j)) <- 1
+                Escribir "  [SE FUE] VIP ID: ", id_num(cola(j))
+				
+            SiNo
+                Si tipo(cola(j)) = 2 Y espera_act >= 6 Entonces
+                    se_fue(cola(j)) <- 1
+                    Escribir "  [SE FUE] NUEVO ID: ", id_num(cola(j))
+					
+                SiNo
+                    Si tipo(cola(j)) = 3 Y espera_act >= 10 Entonces
+                        se_fue(cola(j)) <- 1
+                        Escribir "  [SE FUE] NORMAL ID: ", id_num(cola(j))
+                    FinSi
+                FinSi
+            FinSi
+			
+        FinPara
+		
+		
+        // LIMPIAR COLA
+        k <- 0
+        Para j <- 1 Hasta tam_cola Con Paso 1
+            Si se_fue(cola(j)) = 0 Y atendido(cola(j)) = 0 Entonces
+                k <- k + 1
+                cola(k) <- cola(j)
+            FinSi
+        FinPara
+        tam_cola <- k
+		
+		
+        // TERMINAR ATENCIÓN
+        Si caja_libre = 0 Y reloj >= fin_atencion Entonces
+            atendido(cliente_en_caja) <- 1
+            t_salida(cliente_en_caja) <- reloj
+            Escribir "  [ATENDIDO] ID: ", id_num(cliente_en_caja)
+            caja_libre <- 1
+        FinSi
+		
+		
+        // TOMAR SIGUIENTE
+        Si caja_libre = 1 Y tam_cola > 0 Entonces
+			
+            cliente_en_caja <- cola(1)
+            t_espera(cliente_en_caja) <- reloj - t_llegada(cliente_en_caja)
+            fin_atencion <- reloj + t_atencion(cliente_en_caja)
+            caja_libre <- 0
+			
+            Escribir "  [EN CAJA] ID: ", id_num(cliente_en_caja)
+			
+            // Desplazar cola
+            Para j <- 1 Hasta tam_cola - 1 Con Paso 1
+                cola(j) <- cola(j + 1)
+            FinPara
+            tam_cola <- tam_cola - 1
+			
+        FinSi
+		
+        Escribir "  Cola: ", tam_cola
+		
+        reloj <- reloj + 1
+		
+    Hasta Que reloj > tiempo_max
+	
+	
+    Escribir "--------------------------------------"
+    Escribir " FIN DE SIMULACION"
+    Escribir " Clientes generados: ", i
+    Escribir "--------------------------------------"
+	
+FinProceso
