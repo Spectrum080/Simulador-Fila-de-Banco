@@ -6,11 +6,11 @@
 ### Equipo de Desarrollo
 
 [![Carlos](https://img.shields.io/badge/Carlos-Líder_de_Proyecto-blue?style=flat-square&logo=github)](https://github.com/Spectrum080)
-[![Hugo](https://img.shields.io/badge/Hugo-Desarrollador-brightgreen?style=flat-square&logo=github)](https://github.com/HugoLM28)
-[![Santi](https://img.shields.io/badge/Santy-Desarrollador-orange?style=flat-square&logo=github)](https://github.com/SantyRCH)
-[![Seth](https://img.shields.io/badge/Seth-Desarrollador-yellow?style=flat-square&logo=github)](https://github.com/USUARIO_DE_SETH)
-[![Omar](https://img.shields.io/badge/Omar-Desarrollador-red?style=flat-square&logo=github)](https://github.com/USUARIO_DE_OMAR)
-[![Arturo](https://img.shields.io/badge/Arturo-Desarrollador-purple?style=flat-square&logo=github)](https://github.com/USUARIO_DE_ARTURO)
+[![Hugo](https://img.shields.io/badge/Hugo-Dev-EspecialistaLógica-brightgreen?style=flat-square&logo=github)](https://github.com/HugoLM28)
+[![Santi](https://img.shields.io/badge/Santy-Dev-AnalistaDatos-orange?style=flat-square&logo=github)](https://github.com/SantyRCH)
+[![Seth](https://img.shields.io/badge/Seth-Dev-EspecialistaLógica-yellow?style=flat-square&logo=github)](https://github.com/USUARIO_DE_SETH)
+[![Omar](https://img.shields.io/badge/Omar-Dev-DesarrolladorInterfaz-red?style=flat-square&logo=github)](https://github.com/USUARIO_DE_OMAR)
+[![Arturo](https://img.shields.io/badge/Dev-Arturo-DocumentadorTester-purple?style=flat-square&logo=github)](https://github.com/USUARIO_DE_ARTURO)
 
 Sistema de simulación de eventos discretos diseñado para optimizar y analizar el flujo de atención a clientes en una sucursal bancaria, aplicando estructuras de datos tipo **FIFO** y algoritmos de prioridad.
 
