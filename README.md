@@ -5,12 +5,12 @@
 ![UVM](https://img.shields.io/badge/Institution-UVM%20Reforma-red.svg)
 ### Equipo de Desarrollo
 
-[![Carlos](https://img.shields.io/badge/Carlos-Líder_de_Proyecto-blue?style=flat-square&logo=github)](https://github.com/Spectrum080)
-[![Hugo](https://img.shields.io/badge/Hugo-Dev-EspecialistaLógica-brightgreen?style=flat-square&logo=github)](https://github.com/HugoLM28)
-[![Santi](https://img.shields.io/badge/Santy-Dev-AnalistaDatos-orange?style=flat-square&logo=github)](https://github.com/SantyRCH)
-[![Seth](https://img.shields.io/badge/Seth-Dev-EspecialistaLógica-yellow?style=flat-square&logo=github)](https://github.com/USUARIO_DE_SETH)
-[![Omar](https://img.shields.io/badge/Omar-Dev-DesarrolladorInterfaz-red?style=flat-square&logo=github)](https://github.com/USUARIO_DE_OMAR)
-[![Arturo](https://img.shields.io/badge/Dev-Arturo-DocumentadorTester-purple?style=flat-square&logo=github)](https://github.com/USUARIO_DE_ARTURO)
+[![Carlos](https://img.shields.io/badge/Carlos-Líder_del_Equipo-blue?style=flat-square&logo=github)](https://github.com/Spectrum080)
+[![Hugo](https://img.shields.io/badge/Hugo-Especialista_de_Lógica-brightgreen?style=flat-square&logo=github)](https://github.com/HugoLM28)
+[![Seth](https://img.shields.io/badge/Seth-Especialista_de_Lógica-brightgreen?style=flat-square&logo=github)](https://github.com/USUARIO_DE_SETH)
+[![Santiago](https://img.shields.io/badge/Santy-Analista_de_Datos-orange?style=flat-square&logo=github)](https://github.com/SantyRCH)
+[![Omar](https://img.shields.io/badge/Omar-Desarrollador_de_Interfaz-red?style=flat-square&logo=github)](https://github.com/USUARIO_DE_OMAR)
+[![Arturo](https://img.shields.io/badge/Arturo-Documentador_y_Tester-purple?style=flat-square&logo=github)](https://github.com/USUARIO_DE_ARTURO)
 
 Sistema de simulación de eventos discretos diseñado para optimizar y analizar el flujo de atención a clientes en una sucursal bancaria, aplicando estructuras de datos tipo **FIFO** y algoritmos de prioridad.
 
