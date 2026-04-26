@@ -1,4 +1,4 @@
-  Definir i, j, k Como Entero // i Contador total de clientes generado, j Variable auxiliar para recorrer la cola o arreglos, k Se usa para reconstruir la cola al eliminar clientes.
+    Definir i, j, k Como Entero // i Contador total de clientes generado, j Variable auxiliar para recorrer la cola o arreglos, k Se usa para reconstruir la cola al eliminar clientes.
     Definir reloj, tam_cola Como Entero //reloj Tiempo actual de la simulación, tam_cola Número actual de clientes en la cola
     Definir cont_vip, cont_nuevo, cont_norm Como Entero //Número total de clientes
     Definir caja_libre, fin_atencion, cliente_en_caja Como Entero //caja_libre estado de la caja 0-libre 1-ocupada //fin_atencion Minuto en el que terminará el cliente actual //cliente_en_caja Índice del cliente que está siendo atendido.
@@ -6,6 +6,7 @@
     Definir tiempo_max Como Entero //Tiempo total que dura la simulación en minutos
     Definir prob_llegada Como Entero //Probabilidad (%) de que llegue un cliente en cada minuto.
     Definir tipo_rand Como Entero //Número aleatorio usado para asignar el tipo de cliente.
+    Dimension t_llegada[400], atendido[400], se_fue[400], tipo[400], id_num[400], t_atencion[400], cola[400], t_espera[400], t_salida[400]
 	
     // Inicialización
     i <- 0
