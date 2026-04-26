@@ -17,3 +17,4 @@ Modularización
 Tener más de 1 caja
 Clientes con prioridad
 Visualizaciones en tipo tabla
+https://img.shields.io/badge/github-repo-blue?logo=github
