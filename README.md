@@ -1,8 +1,8 @@
 # Simulador de Fila de Banco
 
-![C](https://img.shields.io/badge/Language-C-blue.svg)
-![Status](https://img.shields.io/badge/Status-En%20Desarrollo-green.svg)
-![UVM](https://img.shields.io/badge/Institution-UVM%20Reforma-red.svg)
+![C](https://img.shields.io/badge/Language-C-blue.svg?style=flat-square)
+![Status](https://img.shields.io/badge/Status-En%20Desarrollo-green.svg?style=flat-square)
+![UVM](https://img.shields.io/badge/Institución-UVM%20Reforma-red?style=flat-square&logo=google-classroom&logoColor=white)g)
 ### Equipo de Desarrollo
 
 [![Carlos](https://img.shields.io/badge/Carlos-Líder_del_Equipo-blue?style=flat-square&logo=github)](https://github.com/Spectrum080)
