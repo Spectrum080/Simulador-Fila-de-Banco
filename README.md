@@ -8,7 +8,7 @@
 [![Carlos](https://img.shields.io/badge/Carlos-Líder_del_Equipo-blue?style=flat-square&logo=github)](https://github.com/Spectrum080)
 [![Hugo](https://img.shields.io/badge/Hugo-Especialista_de_Lógica-brightgreen?style=flat-square&logo=github)](https://github.com/HugoLM28)
 [![Seth](https://img.shields.io/badge/Seth-Especialista_de_Lógica-brightgreen?style=flat-square&logo=github)](https://github.com/USUARIO_DE_SETH)
-[![Santiago](https://img.shields.io/badge/Santy-Analista_de_Datos-orange?style=flat-square&logo=github)](https://github.com/SantyRCH)
+[![Santiago](https://img.shields.io/badge/Santiago-Analista_de_Datos-orange?style=flat-square&logo=github)](https://github.com/SantyRCH)
 [![Omar](https://img.shields.io/badge/Omar-Desarrollador_de_Interfaz-red?style=flat-square&logo=github)](https://github.com/USUARIO_DE_OMAR)
 [![Arturo](https://img.shields.io/badge/Arturo-Documentador_y_Tester-purple?style=flat-square&logo=github)](https://github.com/USUARIO_DE_ARTURO)
 
