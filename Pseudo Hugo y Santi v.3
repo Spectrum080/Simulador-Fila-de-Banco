@@ -1,0 +1,259 @@
+Algoritmo Proyectolll
+	
+	//Pseudo con las 3 cajas y con reporte final, deje todo lo que habia hecho Santiago, simplemente agregue esas dos cosas
+	// La estructura es la misma que antes, tiene casi todo igual, solo le puse cositas extras muy pequeñas
+	//Creo que con esto ya tenemos bien definida la estructura del proyecto para empezar a transcribirlo en C
+	// Ya tambien tenemos el diagrama, solo seria transcribirlo y ver que funcione bien
+	//Si tienen alguna duda o algo que quieran corregir, me avisan por el grupo
+	
+	//Variables 
+		Definir i, j, k, c Como Entero
+		Definir reloj, tam_cola Como Entero
+		Definir cont_vip, cont_nuevo, cont_norm Como Entero
+		Definir espera_act, temp_idx Como Entero
+		Definir tiempo_max, prob_llegada, tipo_rand Como Entero
+		Definir NUM_CAJAS Como Entero
+		NUM_CAJAS <- 3
+		
+		// Arreglos por cada caja
+		Dimension caja_libre[3], fin_atencion[3], cliente_en_caja[3]
+		
+		// Arreglos de cliente
+		Dimension t_llegada[400], atendido[400], se_fue[400], tipo[400]
+		Dimension id_num[400], t_atencion[400], cola[400], t_espera[400]
+		Dimension t_salida[400], caja_asignada[400]   // esto es nuevo, para saber que caja atendio a cada cliente
+		
+		
+		// Inicializacion 
+		
+		i <- 0
+		reloj <- 1
+		tam_cola <- 0
+		cont_vip <- 0
+		cont_nuevo <- 0
+		cont_norm <- 0
+		
+		Para c <- 1 Hasta NUM_CAJAS Con Paso 1
+			caja_libre[c] <- 1
+			fin_atencion[c] <- 0
+			cliente_en_caja[c] <- 0
+		FinPara
+		
+		tiempo_max <- 400
+		prob_llegada <- 40
+		
+		Escribir "---------------------------------------"
+		Escribir " SIMULADOR DE FILA DE BANCO CON 3 CAJAS"
+		Escribir "---------------------------------------"
+		
+		Repetir
+			
+			Escribir "=== Minuto ", reloj, " ==="
+			
+			
+			// Generacion de clientes
+			
+			Si azar(100) < prob_llegada Entonces
+				
+				i <- i + 1
+				t_llegada[i] <- reloj
+				atendido[i] <- 0
+				se_fue[i] <- 0
+				caja_asignada[i] <- 0   // sin caja todavia
+				
+				tipo_rand <- azar(3) + 1
+				tipo[i] <- tipo_rand
+				
+				Segun tipo_rand Hacer
+					1:
+						cont_vip <- cont_vip + 1
+						id_num[i] <- cont_vip
+						t_atencion[i] <- azar(3) + 2
+					2:
+						cont_nuevo <- cont_nuevo + 1
+						id_num[i] <- cont_nuevo
+						t_atencion[i] <- azar(4) + 3
+					3:
+						cont_norm <- cont_norm + 1
+						id_num[i] <- cont_norm * 10
+						t_atencion[i] <- azar(5) + 3
+				FinSegun
+				
+				tam_cola <- tam_cola + 1
+				cola[tam_cola] <- i
+				
+				// prioridad
+				j <- tam_cola
+				Mientras j > 1 Hacer
+					Si tipo[cola[j]] < tipo[cola[j-1]] Entonces
+						temp_idx <- cola[j]
+						cola[j] <- cola[j-1]
+						cola[j-1] <- temp_idx
+						j <- j - 1
+					SiNo
+						j <- 0
+					FinSi
+				FinMientras
+				
+				Escribir "  [LLEGO] Cliente tipo ", tipo[i], " ID: ", id_num[i]
+				
+			FinSi
+			
+			
+			// Revisar si alguien se va
+			
+			Para j <- 1 Hasta tam_cola Con Paso 1
+				espera_act <- reloj - t_llegada[cola[j]]
+				Si tipo[cola[j]] = 1 Y espera_act >= 8 Entonces
+					se_fue[cola[j]] <- 1
+					Escribir "  [SE FUE] VIP ID: ", id_num[cola[j]]
+				SiNo
+					Si tipo[cola[j]] = 2 Y espera_act >= 6 Entonces
+						se_fue[cola[j]] <- 1
+						Escribir "  [SE FUE] NUEVO ID: ", id_num[cola[j]]
+					SiNo
+						Si tipo[cola[j]] = 3 Y espera_act >= 10 Entonces
+							se_fue[cola[j]] <- 1
+							Escribir "  [SE FUE] NORMAL ID: ", id_num[cola[j]]
+						FinSi
+					FinSi
+				FinSi
+			FinPara
+			
+			
+			// limpiar cola
+			
+			k <- 0
+			Para j <- 1 Hasta tam_cola Con Paso 1
+				Si se_fue[cola[j]] = 0 Y atendido[cola[j]] = 0 Entonces
+					k <- k + 1
+					cola[k] <- cola[j]
+				FinSi
+			FinPara
+			tam_cola <- k
+			
+			
+			// terminar la ocupacion de las cajas
+			
+			Para c <- 1 Hasta NUM_CAJAS Con Paso 1
+				Si caja_libre[c] = 0 Y reloj >= fin_atencion[c] Entonces
+					atendido[cliente_en_caja[c]] <- 1
+					t_salida[cliente_en_caja[c]] <- reloj
+					Escribir "  [ATENDIDO] Caja ", c, " - ID: ", id_num[cliente_en_caja[c]]
+					caja_libre[c] <- 1
+				FinSi
+			FinPara
+			
+			
+			// El que sigueeeee
+			
+			Para c <- 1 Hasta NUM_CAJAS Con Paso 1
+				Si caja_libre[c] = 1 Y tam_cola > 0 Entonces
+					cliente_en_caja[c] <- cola[1]
+					t_espera[cliente_en_caja[c]] <- reloj - t_llegada[cliente_en_caja[c]]
+					fin_atencion[c] <- reloj + t_atencion[cliente_en_caja[c]]
+					caja_libre[c] <- 0
+					caja_asignada[cliente_en_caja[c]] <- c   // guarda la caja que lo atendio
+					
+					Escribir "  [EN CAJA ", c, "] ID: ", id_num[cliente_en_caja[c]]
+					
+					Para j <- 1 Hasta tam_cola - 1 Con Paso 1
+						cola[j] <- cola[j + 1]
+					FinPara
+					tam_cola <- tam_cola - 1
+				FinSi
+			FinPara
+			
+			Escribir "  Cola actual: ", tam_cola
+			reloj <- reloj + 1
+			
+		Hasta Que reloj > tiempo_max
+		
+		
+		
+		// Reporte final 
+		//Este lo volvi a agregar pq Santi lo habia quitado
+		//Pero esta vez en vez de hacer el reporte como q general nada mas 
+		//Ahora lo hice igual, pero agregue uno para que cada caja diera el reporte del dia por asi decirlo
+		
+		Definir tot_atendidos, tot_sefueron Como Entero
+		
+		Dimension cnt_caja[3]          // total de clientes atendidos por cada caja
+		Dimension vip_caja[3]          // vips atendidos por cada caja
+		Dimension nuevo_caja[3]        // nuevos atendidos por cada caja
+		Dimension norm_caja[3]         // normales atendidos por cada caja
+		Dimension sum_espera_caja[3]   // suma de tiempos de espera por caja
+		Dimension max_espera_caja[3]   // espera máxima por caja
+		Definir prom_espera Como Real
+		
+		//Empezar contadores para el reporte
+		tot_atendidos <- 0
+		tot_sefueron <- 0
+		Para c <- 1 Hasta NUM_CAJAS Con Paso 1
+			cnt_caja[c] <- 0
+			vip_caja[c] <- 0
+			nuevo_caja[c] <- 0
+			norm_caja[c] <- 0
+			sum_espera_caja[c] <- 0
+			max_espera_caja[c] <- 0
+		FinPara
+		
+		// Recorrer a todos los clientes generados
+		Para j <- 1 Hasta i Con Paso 1
+			
+			Si se_fue[j] = 1 Entonces
+				tot_sefueron <- tot_sefueron + 1
+			FinSi
+			
+			Si atendido[j] = 1 Entonces
+				tot_atendidos <- tot_atendidos + 1
+				c <- caja_asignada[j]
+				
+				cnt_caja[c] <- cnt_caja[c] + 1
+				sum_espera_caja[c] <- sum_espera_caja[c] + t_espera[j]
+				
+				Si t_espera[j] > max_espera_caja[c] Entonces
+					max_espera_caja[c] <- t_espera[j]
+				FinSi
+				
+				Segun tipo[j] Hacer
+					1: vip_caja[c]   <- vip_caja[c] + 1
+					2: nuevo_caja[c] <- nuevo_caja[c] + 1
+					3: norm_caja[c]  <- norm_caja[c] + 1
+				FinSegun
+			FinSi
+			
+		FinPara
+		
+		// Reporte general
+		Escribir "--------------------------------------"
+		Escribir "           REPORTE FINAL"
+		Escribir "---------------------------------------"
+		Escribir " Clientes generados: ", i
+		Escribir "   VIP: ", cont_vip
+		Escribir "   Nuevos: ", cont_nuevo
+		Escribir "   Normales: ", cont_norm
+		Escribir " Clientes atendidos: ", tot_atendidos
+		Escribir " Clientes que se fueron: ", tot_sefueron
+		
+		// Reporte de cada caja
+		Para c <- 1 Hasta NUM_CAJAS Con Paso 1
+			
+			Si cnt_caja[c] > 0 Entonces
+				prom_espera <- sum_espera_caja[c] / cnt_caja[c]
+			SiNo
+				prom_espera <- 0
+			FinSi
+			
+			Escribir "--------------------------------------"
+			Escribir " CAJA ", c
+			Escribir "   Clientes atendidos:  ", cnt_caja[c]
+			Escribir "   - VIP:  ", vip_caja[c]
+			Escribir "   - Nuevos: ", nuevo_caja[c]
+			Escribir "   - Normales: ", norm_caja[c]
+			Escribir "   Espera promedio:", prom_espera, " min"
+			Escribir "   Espera maxima: ", max_espera_caja[c], " min"
+			
+		FinPara
+		
+FinAlgoritmo
