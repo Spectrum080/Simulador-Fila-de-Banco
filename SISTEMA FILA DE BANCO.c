@@ -31,114 +31,239 @@
 #include <conio.h> // Para omar, revisa su biblioteca, hay muchos inputs como textcolor, colorbackground, etc
 #include <time.h> // Útil si en el futuro llegamos a agregar la fecha/hora real del sistema
 
-//Clientes//
-struct Clientes { //Voy a usar struct para no dejar las variables sueltas//
-int id;
-int prioridad;
-int tiempo_llegada;
-int tiempo_atencion;
-int tiempo_espera;
-};
+int main() {
+    srand(time(NULL));
 
-//Cajas//
-struct Cajas {
-int numero;
-int ocupada;
-};
+    // Variables
+    int i, j, k, c;
+    int reloj, tam_cola;
+    int cont_vip, cont_nuevo, cont_norm;
+    int espera_act, temp_idx;
+    int tiempo_max, prob_llegada, tipo_rand;
+    int NUM_CAJAS = 3;
 
-int main () {
+    // Arreglos por cada caja (indices 1..3, se declara tama�o 4)
+    int caja_libre[4], fin_atencion[4], cliente_en_caja[4];
 
-//Variables con float//
-float tiempo_total = 0.0;
-float promedio_tiempo = 0.0;
-//Variables con int//
-int cajero_desocupado = 0; //O sea que el cajero esta desocupado en el minuto 0//
+    // Arreglos de cliente (indices 1..400, se declara tama�o 401)
+    int t_llegada[401], atendido[401], se_fue[401], tipo[401];
+    int id_num[401], t_atencion[401], cola[401], t_espera[401];
+    int t_salida[401], caja_asignada[401];
 
+    // Inicializacion
+    i = 0;
+    reloj = 1;
+    tam_cola = 0;
+    cont_vip = 0;
+    cont_nuevo = 0;
+    cont_norm = 0;
 
-//Numero de clientes//
-int num_clientes = 5; //Podemos agregar mas despues, ahorita es para hacer la estructura//
-struct Clientes fila [5] = {
+    for (c = 1; c <= NUM_CAJAS; c++) {
+        caja_libre[c] = 1;
+        fin_atencion[c] = 0;
+        cliente_en_caja[c] = 0;
+    }
 
-       {2, 3, 2, 2, 0},
-       {4, 8, 3, 1, 0},
-       {1, 0, 4, 3, 0},
-       {5, 10, 5, 2, 0},
-       {3, 5, 6, 4, 0}
+    tiempo_max = 400;
+    prob_llegada = 60;
 
-};
+    printf("---------------------------------------\n");
+    printf(" SIMULADOR DE FILA DE BANCO CON 3 CAJAS\n");
+    printf("----------------------------------------\n");
 
+    do {
+        printf("=== Minuto %d ===\n", reloj);
 
-//Primer ciclo//
-for (int i = 0; i < num_clientes; i++) {
+        // Generacion de clientes
+        if ((rand() % 100) < prob_llegada) {
 
-        if ( cajero_desocupado < fila[i].tiempo_llegada){
-            cajero_desocupado = fila[i].tiempo_llegada;
+            i = i + 1;
+            t_llegada[i] = reloj;
+            atendido[i] = 0;
+            se_fue[i] = 0;
+            caja_asignada[i] = 0;
 
+            tipo_rand = (rand() % 3) + 1;
+            tipo[i] = tipo_rand;
+
+            switch (tipo_rand) {
+                case 1:
+                    cont_vip = cont_vip + 1;
+                    id_num[i] = cont_vip;
+                    t_atencion[i] = (rand() % 3) + 2;
+                    break;
+                case 2:
+                    cont_nuevo = cont_nuevo + 1;
+                    id_num[i] = cont_nuevo;
+                    t_atencion[i] = (rand() % 4) + 3;
+                    break;
+                case 3:
+                    cont_norm = cont_norm + 1;
+                    id_num[i] = cont_norm * 10;
+                    t_atencion[i] = (rand() % 5) + 3;
+                    break;
+            }
+
+            tam_cola = tam_cola + 1;
+            cola[tam_cola] = i;
+
+            // prioridad
+            j = tam_cola;
+            while (j > 1) {
+                if (tipo[cola[j]] < tipo[cola[j-1]]) {
+                    temp_idx = cola[j];
+                    cola[j] = cola[j-1];
+                    cola[j-1] = temp_idx;
+                    j = j - 1;
+                } else {
+                    j = 0;
+                }
+            }
+
+            printf("  [LLEGO] Cliente tipo %d ID: %d\n", tipo[i], id_num[i]);
         }
-    fila[i].tiempo_espera = cajero_desocupado - fila[i].tiempo_llegada;
-    cajero_desocupado = cajero_desocupado + fila[i].tiempo_atencion;
 
-     tiempo_total += fila[i].tiempo_espera;
-}
+        // Revisar si alguien se va
+        for (j = 1; j <= tam_cola; j++) {
+            espera_act = reloj - t_llegada[cola[j]];
+            if (tipo[cola[j]] == 1 && espera_act >= 8) {
+                se_fue[cola[j]] = 1;
+                printf("  [SE FUE] VIP ID: %d\n", id_num[cola[j]]);
+            } else {
+                if (tipo[cola[j]] == 2 && espera_act >= 6) {
+                    se_fue[cola[j]] = 1;
+                    printf("  [SE FUE] NUEVO ID: %d\n", id_num[cola[j]]);
+                } else {
+                    if (tipo[cola[j]] == 3 && espera_act >= 10) {
+                        se_fue[cola[j]] = 1;
+                        printf("  [SE FUE] NORMAL ID: %d\n", id_num[cola[j]]);
+                    }
+                }
+            }
+        }
 
-//Calculamos el promedio del tiempo//
- promedio_tiempo = tiempo_total / num_clientes;
+        // limpiar cola
+        k = 0;
+        for (j = 1; j <= tam_cola; j++) {
+            if (se_fue[cola[j]] == 0 && atendido[cola[j]] == 0) {
+                k = k + 1;
+                cola[k] = cola[j];
+            }
+        }
+        tam_cola = k;
+
+        // terminar la ocupacion de las cajas
+        for (c = 1; c <= NUM_CAJAS; c++) {
+            if (caja_libre[c] == 0 && reloj >= fin_atencion[c]) {
+                atendido[cliente_en_caja[c]] = 1;
+                t_salida[cliente_en_caja[c]] = reloj;
+                printf("  [ATENDIDO] Caja %d - ID: %d\n", c, id_num[cliente_en_caja[c]]);
+                caja_libre[c] = 1;
+            }
+        }
+
+        // El que sigueeeee
+        for (c = 1; c <= NUM_CAJAS; c++) {
+            if (caja_libre[c] == 1 && tam_cola > 0) {
+                cliente_en_caja[c] = cola[1];
+                t_espera[cliente_en_caja[c]] = reloj - t_llegada[cliente_en_caja[c]];
+                fin_atencion[c] = reloj + t_atencion[cliente_en_caja[c]];
+                caja_libre[c] = 0;
+                caja_asignada[cliente_en_caja[c]] = c;
+
+                printf("  [EN CAJA %d] ID: %d\n", c, id_num[cliente_en_caja[c]]);
+
+                for (j = 1; j <= tam_cola - 1; j++) {
+                    cola[j] = cola[j + 1];
+                }
+                tam_cola = tam_cola - 1;
+            }
+        }
+
+        printf("  Cola actual: %d\n", tam_cola);
+        reloj = reloj + 1;
+
+    } while (reloj <= tiempo_max);
 
 
+    // Reporte final
+    int tot_atendidos, tot_sefueron;
+    double prom_espera;
+    int suma_temp, cnt_temp;
 
+    int cnt_caja[4];
+    int vip_caja[4];
+    int nuevo_caja[4];
+    int norm_caja[4];
+    int sum_espera_caja[4];
+    int max_espera_caja[4];
 
+    tot_atendidos = 0;
+    tot_sefueron = 0;
 
-
-
-
-
-return 0;
-}
-
-//=======================================================================================================
-// 10. Sistema de log de eventos (registro_banco.txt) con formato ASCII en desarrollo, necesito estrucutra logica para registrar cada movimiento de la simulación 
-// (llegada, atención, abandono) con detalles como minuto, tipo de cliente, tiempo de espera, etc. El log debe ser legible y organizado para facilitar el análisis posterior.
-// dejen esto al final, no hace falta que lo dejen al inicio
-// =====================================================================================================
-
-void inicializar_log() {
-    // "w" abre el archivo para escribir desde cero. Usa "a" si quieres añadir al final sin borrar
-    FILE *archivo_log = fopen("registro_banco.txt", "w"); 
-    
-    if (archivo_log == NULL) {
-        printf("Error al crear el archivo de log.\n");
-        return;
+    for (c = 1; c <= NUM_CAJAS; c++) {
+        cnt_caja[c] = 0;
+        vip_caja[c] = 0;
+        nuevo_caja[c] = 0;
+        norm_caja[c] = 0;
+        sum_espera_caja[c] = 0;
+        max_espera_caja[c] = 0;
     }
 
-    // algunos print para crear un encabezado legible y organizado
-    fprintf(archivo_log, "+-------------------------------------------------------------------------+\n");
-    fprintf(archivo_log, "|                    LOG DE EVENTOS - SIMULADOR BANCARIO                  |\n");
-    fprintf(archivo_log, "+---------+----------+-------------+------------------+-------------------+\n");
-    fprintf(archivo_log, "| MINUTO  | EVENTO   | ID CLIENTE  | TIPO DE CLIENTE  | TIEMPO DE ESPERA  |\n");
-    fprintf(archivo_log, "+---------+----------+-------------+------------------+-------------------+\n");
-    
-    fclose(archivo_log);
-}
+    for (j = 1; j <= i; j++) {
 
-// esta funcion sirve para registrar cada evento que ocurra en la simulación, con detalles como el minuto, tipo de evento, id del cliente, tipo de cliente y tiempo de espera
-void registrar_evento(int minuto, char* evento, int id_cliente, int tipo, int espera) {
-    FILE *archivo_log = fopen("registro_banco.txt", "a"); // "a" (append) para no sobreescribir
-    
-    if (archivo_log != NULL) {
-        // Se usa formato tabular con anchos fijos (ej. %-7d alinea a la izquierda)
-        fprintf(archivo_log, "| %-7d | %-8s | %-11d | %-16d | %-17d |\n", 
-                minuto, evento, id_cliente, tipo, espera);
-        fclose(archivo_log);
-    }
-}
+        if (se_fue[j] == 1) {
+            tot_sefueron = tot_sefueron + 1;
+        }
 
-// Función para cerrar la tabla al terminar la simulación
-void cerrar_log() {
-    FILE *archivo_log = fopen("registro_banco.txt", "a");
-    if (archivo_log != NULL) {
-        fprintf(archivo_log, "+---------+----------+-------------+------------------+-------------------+\n");
-        fprintf(archivo_log, "|                        FIN DE LA SIMULACION                             |\n");
-        fprintf(archivo_log, "+-------------------------------------------------------------------------+\n");
-        fclose(archivo_log);
+        if (atendido[j] == 1 && caja_asignada[j] > 0) {
+            tot_atendidos = tot_atendidos + 1;
+            c = caja_asignada[j];
+
+            cnt_caja[c] = cnt_caja[c] + 1;
+            sum_espera_caja[c] = sum_espera_caja[c] + t_espera[j];
+
+            if (t_espera[j] > max_espera_caja[c]) {
+                max_espera_caja[c] = t_espera[j];
+            }
+
+            switch (tipo[j]) {
+                case 1: vip_caja[c] = vip_caja[c] + 1; break;
+                case 2: nuevo_caja[c] = nuevo_caja[c] + 1; break;
+                case 3: norm_caja[c] = norm_caja[c] + 1; break;
+            }
+        }
     }
+
+    printf("--------------------------------------\n");
+    printf("           REPORTE FINAL\n");
+    printf("---------------------------------------\n");
+    printf(" Clientes generados: %d\n", i);
+    printf("   VIP: %d\n", cont_vip);
+    printf("   Nuevos: %d\n", cont_nuevo);
+    printf("   Normales: %d\n", cont_norm);
+    printf(" Clientes atendidos: %d\n", tot_atendidos);
+    printf(" Clientes que se fueron: %d\n", tot_sefueron);
+
+    for (c = 1; c <= NUM_CAJAS; c++) {
+
+        if (cnt_caja[c] > 0) {
+            suma_temp = sum_espera_caja[c];
+            cnt_temp = cnt_caja[c];
+            prom_espera = (int)(((double)suma_temp / cnt_temp) * 60 * 100) / 100.0;
+        } else {
+            prom_espera = 0;
+        }
+
+        printf("--------------------------------------\n");
+        printf(" CAJA %d\n", c);
+        printf("   Clientes atendidos:  %d\n", cnt_caja[c]);
+        printf("   - VIP:  %d\n", vip_caja[c]);
+        printf("   - Nuevos: %d\n", nuevo_caja[c]);
+        printf("   - Normales: %d\n", norm_caja[c]);
+        printf("   Espera promedio: %.2f seg\n", prom_espera);
+        printf("   Espera maxima: %d min\n", max_espera_caja[c]);
+    }
+
+    return 0;
 }
