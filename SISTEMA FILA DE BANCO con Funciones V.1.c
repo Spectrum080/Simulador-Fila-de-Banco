@@ -110,7 +110,7 @@ int main() {
             tipo_rand = (rand() % 3) + 1;
             tipo[i] = tipo_rand;
 
-            valores_tipo(i,tipo_rand, cont_x_tipo,id_num,t_atencion);
+            valores_tipo(i,tipo_rand, cont_tipo,id_num,t_atencion);
 
             tam_cola = tam_cola + 1;
             cola[tam_cola] = i;
