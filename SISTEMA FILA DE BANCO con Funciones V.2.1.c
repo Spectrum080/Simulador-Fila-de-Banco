@@ -35,17 +35,17 @@ void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]){
     switch (tipo){
         case 1:
             contador[0]= contador[0]+1;
-            id[x] = (*contador);
+            id[x] = (contador[0]);
             tiempo[x] = (rand() % 3) + 2;
             break;
         case 2:
             contador[1]= contador[1]+1;
-            id[x] = (*contador);
+            id[x] = (contador[1]);
             tiempo[x] = (rand() % 4) + 3;
             break;
         case 3:
             contador[2]= contador[2]+1;
-            id[x] = (*contador) * 10;
+            id[x] = (contador[2]) * 10;
             tiempo[x] = (rand() % 5) + 3;
             break;
     }
@@ -56,6 +56,27 @@ void ord_priori(int x, int fila[]){
     temp_idx = fila[x];
     fila[x] = fila[x-1];
     fila[x-1] = temp_idx;
+    return;
+}
+// Adicion V.2.1 Funcion para revisar si alguien sale de la fila
+void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int id_num[]){
+    if (tipo[cola[j]] == 1 && espera_act >= 8) {
+        se_fue[cola[j]] = 1;
+        printf("  [SE FUE] VIP ID: %d\n", id_num[cola[j]]);
+        return;
+    } else {
+        if (tipo[cola[j]] == 2 && espera_act >= 6) {
+            se_fue[cola[j]] = 1;
+            printf("  [SE FUE] NUEVO ID: %d\n", id_num[cola[j]]);
+            return;
+        } else {
+            if (tipo[cola[j]] == 3 && espera_act >= 10) {
+                se_fue[cola[j]] = 1;
+                printf("  [SE FUE] NORMAL ID: %d\n", id_num[cola[j]]);
+                return;
+            }
+        }
+    }
     return;
 }
 void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[], int norm[], int max_espera[]){
@@ -160,20 +181,7 @@ int main() {
         // Revisar si alguien se va
         for (j = 1; j <= tam_cola; j++) {
             espera_act = reloj - t_llegada[cola[j]];
-            if (tipo[cola[j]] == 1 && espera_act >= 8) {
-                se_fue[cola[j]] = 1;
-                printf("  [SE FUE] VIP ID: %d\n", id_num[cola[j]]);
-            } else {
-                if (tipo[cola[j]] == 2 && espera_act >= 6) {
-                    se_fue[cola[j]] = 1;
-                    printf("  [SE FUE] NUEVO ID: %d\n", id_num[cola[j]]);
-                } else {
-                    if (tipo[cola[j]] == 3 && espera_act >= 10) {
-                        se_fue[cola[j]] = 1;
-                        printf("  [SE FUE] NORMAL ID: %d\n", id_num[cola[j]]);
-                    }
-                }
-            }
+            Alguien_se_va(j,espera_act,cola,tipo,se_fue,id_num);
         }
 
         // limpiar cola
