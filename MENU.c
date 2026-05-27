@@ -27,10 +27,10 @@ int main()
 
         while (getchar() != '\n'); //limpia el bufer
 
-        switch(opc){
+        switch(opc){ 
         case 1:
             //sentencias
-            system("cls"); //Preguntar si agregar system a los casos
+            system("cls"); 
             printf("Esta es la opcion A\n");
             system("pause");
             break;
@@ -59,7 +59,7 @@ int main()
             break;
         }
 
-    }while(opc!=0); //condicion del menu
+    }while(opc!=0); //fin del menu
 
     system("cls");
 
