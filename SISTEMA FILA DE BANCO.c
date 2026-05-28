@@ -20,7 +20,7 @@
  //* de espera supera la tolerancia según el tipo de cliente.
  //* - Reordenamiento dinámico de la cola para respetar la jerarquía de atención.
  //* * Notas de la versión: 1.1
- //* Se refactorizó el pseudocódigo original para asegurar el correcto dimensionamiento
+ //* Se refactorizó el pseudocódigo original para asegurar el correcto dimensionamiento.
  //* de memoria en arreglos y se corrigió el desfase temporal en la liberación de la caja.
  //*******************************************************************************//
 
