@@ -1,28 +1,28 @@
-/*******************************************************************************
- * PROYECTO INTEGRADOR: Simulador de Fila de Banco Estructura de Datos FIFO
- * Universidad del Valle de México (UVM) - Campus Reforma
- * Ingeniería en Sistemas Computacionales
- * Lider de Proyecto: Carlos Gutierrez
- * Equipo de Desarrollo: Luna Monroy Víctor Hugo, Esparragoza Morales Seth Carlos, Rodríguez Chua Santiago Antonio, Velasco Hernandez Omar, Tapia Pérez Jorge Arturo
- * Periodo de Desarrollo: Abril 2026 - Mayo 2026
- * DESCRIPCIÓN DEL SISTEMA:
- * Este programa implementa una simulación de eventos discretos en lenguaje C 
- * para gestionar la llegada, espera y atención de clientes en una caja bancaria. 
- * Se fundamenta en una estructura de datos tipo cola (FIFO) e incorpora un 
- * sistema de prioridades de 3 niveles:
- * 1. VIP (Alta prioridad, menor tolerancia de espera)
- * 2. Cliente Nuevo (Prioridad media)
- * 3. Cliente Normal (Prioridad estándar, mayor tolerancia)
- * * CARACTERÍSTICAS TÉCNICAS:
- * - Generación estocástica de clientes basada en probabilidad porcentual por minuto.
- * - Asignación de tiempos de atención variables mediante funciones aleatorias.
- * - Lógica de "agente autónomo" para el abandono de la cola cuando el tiempo 
- * de espera supera la tolerancia según el tipo de cliente.
- * - Reordenamiento dinámico de la cola para respetar la jerarquía de atención.
- * * Notas de la versión: 1.1
- * Se refactorizó el pseudocódigo original para asegurar el correcto dimensionamiento
- * de memoria en arreglos y se corrigió el desfase temporal en la liberación de la caja.
- *******************************************************************************/
+//*******************************************************************************
+ //* PROYECTO INTEGRADOR: Simulador de Fila de Banco Estructura de Datos FIFO
+ //* Universidad del Valle de México (UVM) - Campus Reforma
+ //* Ingeniería en Sistemas Computacionales
+ //* Lider de Proyecto: Carlos Gutierrez
+ //* Equipo de Desarrollo: Luna Monroy Víctor Hugo, Esparragoza Morales Seth Carlos, Rodríguez Chua Santiago Antonio, Velasco Hernandez Omar, Tapia Pérez Jorge Arturo
+ //* Periodo de Desarrollo: Abril 2026 - Mayo 2026
+ //* DESCRIPCIÓN DEL SISTEMA:
+ //* Este programa implementa una simulación de eventos discretos en lenguaje C
+ //* para gestionar la llegada, espera y atención de clientes en una caja bancaria.
+ //* Se fundamenta en una estructura de datos tipo cola (FIFO) e incorpora un
+ //* sistema de prioridades de 3 niveles:
+ //* 1. VIP (Alta prioridad, menor tolerancia de espera)
+ //* 2. Cliente Nuevo (Prioridad media)
+//* 3. Cliente Normal (Prioridad estándar, mayor tolerancia)
+ //* * CARACTERÍSTICAS TÉCNICAS:
+ //* - Generación estocástica de clientes basada en probabilidad porcentual por minuto.
+ //* - Asignación de tiempos de atención variables mediante funciones aleatorias.
+ //* - Lógica de "agente autónomo" para el abandono de la cola cuando el tiempo
+ //* de espera supera la tolerancia según el tipo de cliente.
+ //* - Reordenamiento dinámico de la cola para respetar la jerarquía de atención.
+ //* * Notas de la versión: 1.1
+ //* Se refactorizó el pseudocódigo original para asegurar el correcto dimensionamiento
+ //* de memoria en arreglos y se corrigió el desfase temporal en la liberación de la caja.
+ //*******************************************************************************//
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,16 +31,90 @@
 #include <conio.h> // Para omar, revisa su biblioteca, hay muchos inputs como textcolor, colorbackground, etc
 #include <time.h> // Útil si en el futuro llegamos a agregar la fecha/hora real del sistema
 
+void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]){
+    switch (tipo){
+        case 1:
+            contador[0]= contador[0]+1;
+            id[x] = (contador[0]);
+            tiempo[x] = (rand() % 3) + 2;
+            break;
+        case 2:
+            contador[1]= contador[1]+1;
+            id[x] = (contador[1]);
+            tiempo[x] = (rand() % 4) + 3;
+            break;
+        case 3:
+            contador[2]= contador[2]+1;
+            id[x] = (contador[2]) * 10;
+            tiempo[x] = (rand() % 5) + 3;
+            break;
+    }
+    return;
+}
+void ord_priori(int x, int fila[]){
+    int temp_idx;
+    temp_idx = fila[x];
+    fila[x] = fila[x-1];
+    fila[x-1] = temp_idx;
+    return;
+}
+// Adicion V.2.1 Funcion para revisar si alguien sale de la fila
+void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int id_num[]){
+    if (tipo[cola[j]] == 1 && espera_act >= 8) {
+        se_fue[cola[j]] = 1;
+        printf("  [SE FUE] VIP ID: %d\n", id_num[cola[j]]);
+        return;
+    } else {
+        if (tipo[cola[j]] == 2 && espera_act >= 6) {
+            se_fue[cola[j]] = 1;
+            printf("  [SE FUE] NUEVO ID: %d\n", id_num[cola[j]]);
+            return;
+        } else {
+            if (tipo[cola[j]] == 3 && espera_act >= 10) {
+                se_fue[cola[j]] = 1;
+                printf("  [SE FUE] NORMAL ID: %d\n", id_num[cola[j]]);
+                return;
+            }
+        }
+    }
+    return;
+}
+void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[], int norm[], int max_espera[]){
+    printf("--------------------------------------\n");
+    printf(" CAJA %d\n", x);
+    printf("   Clientes atendidos:  %d\n", cnt[x]);
+    printf("   - VIP:  %d\n", vip[x]);
+    printf("   - Nuevos: %d\n", nuevo[x]);
+    printf("   - Normales: %d\n", norm[x]);
+    printf("   Espera promedio: %.2f seg\n", promedio);
+    printf("   Espera maxima: %d min\n", max_espera[x]);
+    return;
+}
+void Reporte_final (int x, int atendidos, int se_fueron, int contador[]){
+    printf("--------------------------------------\n");
+    printf("           REPORTE FINAL\n");
+    printf("---------------------------------------\n");
+    printf(" Clientes generados: %d\n", x);
+    printf("   VIP: %d\n", contador[0]);
+    printf("   Nuevos: %d\n", contador[1]);
+    printf("   Normales: %d\n", contador[2]);
+    printf(" Clientes atendidos: %d\n", atendidos);
+    printf(" Clientes que se fueron: %d\n", se_fueron);
+    return;
+}
 int main() {
     srand(time(NULL));
 
     // Variables
     int i, j, k, c;
     int reloj, tam_cola;
-    int cont_vip, cont_nuevo, cont_norm;
-    int espera_act, temp_idx;
+    int cont_tipo[3];
+    int *cont_vip = &cont_tipo[0];
+    int *cont_nuevo = &cont_tipo[1];
+    int *cont_norm = &cont_tipo[2];
+    int espera_act;
     int tiempo_max, prob_llegada, tipo_rand;
-    int NUM_CAJAS = 3;
+    int NUM_CAJAS;
 
     // Arreglos por cada caja (indices 1..3, se declara tama�o 4)
     int caja_libre[4], fin_atencion[4], cliente_en_caja[4];
@@ -51,12 +125,13 @@ int main() {
     int t_salida[401], caja_asignada[401];
 
     // Inicializacion
+    NUM_CAJAS = 3;
     i = 0;
     reloj = 1;
     tam_cola = 0;
-    cont_vip = 0;
-    cont_nuevo = 0;
-    cont_norm = 0;
+    *cont_vip = 0;
+    *cont_nuevo = 0;
+    *cont_norm = 0;
 
     for (c = 1; c <= NUM_CAJAS; c++) {
         caja_libre[c] = 1;
@@ -85,24 +160,7 @@ int main() {
 
             tipo_rand = (rand() % 3) + 1;
             tipo[i] = tipo_rand;
-
-            switch (tipo_rand) {
-                case 1:
-                    cont_vip = cont_vip + 1;
-                    id_num[i] = cont_vip;
-                    t_atencion[i] = (rand() % 3) + 2;
-                    break;
-                case 2:
-                    cont_nuevo = cont_nuevo + 1;
-                    id_num[i] = cont_nuevo;
-                    t_atencion[i] = (rand() % 4) + 3;
-                    break;
-                case 3:
-                    cont_norm = cont_norm + 1;
-                    id_num[i] = cont_norm * 10;
-                    t_atencion[i] = (rand() % 5) + 3;
-                    break;
-            }
+            valores_tipo(i,tipo_rand, cont_tipo,id_num,t_atencion);
 
             tam_cola = tam_cola + 1;
             cola[tam_cola] = i;
@@ -111,9 +169,7 @@ int main() {
             j = tam_cola;
             while (j > 1) {
                 if (tipo[cola[j]] < tipo[cola[j-1]]) {
-                    temp_idx = cola[j];
-                    cola[j] = cola[j-1];
-                    cola[j-1] = temp_idx;
+                    ord_priori(j,cola);
                     j = j - 1;
                 } else {
                     j = 0;
@@ -126,20 +182,7 @@ int main() {
         // Revisar si alguien se va
         for (j = 1; j <= tam_cola; j++) {
             espera_act = reloj - t_llegada[cola[j]];
-            if (tipo[cola[j]] == 1 && espera_act >= 8) {
-                se_fue[cola[j]] = 1;
-                printf("  [SE FUE] VIP ID: %d\n", id_num[cola[j]]);
-            } else {
-                if (tipo[cola[j]] == 2 && espera_act >= 6) {
-                    se_fue[cola[j]] = 1;
-                    printf("  [SE FUE] NUEVO ID: %d\n", id_num[cola[j]]);
-                } else {
-                    if (tipo[cola[j]] == 3 && espera_act >= 10) {
-                        se_fue[cola[j]] = 1;
-                        printf("  [SE FUE] NORMAL ID: %d\n", id_num[cola[j]]);
-                    }
-                }
-            }
+            Alguien_se_va(j,espera_act,cola,tipo,se_fue,id_num);
         }
 
         // limpiar cola
@@ -234,16 +277,7 @@ int main() {
             }
         }
     }
-
-    printf("--------------------------------------\n");
-    printf("           REPORTE FINAL\n");
-    printf("---------------------------------------\n");
-    printf(" Clientes generados: %d\n", i);
-    printf("   VIP: %d\n", cont_vip);
-    printf("   Nuevos: %d\n", cont_nuevo);
-    printf("   Normales: %d\n", cont_norm);
-    printf(" Clientes atendidos: %d\n", tot_atendidos);
-    printf(" Clientes que se fueron: %d\n", tot_sefueron);
+    Reporte_final(i,tot_atendidos,tot_sefueron,cont_tipo);
 
     for (c = 1; c <= NUM_CAJAS; c++) {
 
@@ -254,15 +288,7 @@ int main() {
         } else {
             prom_espera = 0;
         }
-
-        printf("--------------------------------------\n");
-        printf(" CAJA %d\n", c);
-        printf("   Clientes atendidos:  %d\n", cnt_caja[c]);
-        printf("   - VIP:  %d\n", vip_caja[c]);
-        printf("   - Nuevos: %d\n", nuevo_caja[c]);
-        printf("   - Normales: %d\n", norm_caja[c]);
-        printf("   Espera promedio: %.2f seg\n", prom_espera);
-        printf("   Espera maxima: %d min\n", max_espera_caja[c]);
+        reporte_por_caja(c,prom_espera,cnt_caja,vip_caja,nuevo_caja,norm_caja,max_espera_caja);
     }
 
     return 0;
