@@ -24,13 +24,17 @@
  //* de memoria en arreglos y se corrigió el desfase temporal en la liberación de la caja.
  //*******************************************************************************//
 
+// ==========================================
+// LIBRERIAS
+// ==========================================
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
-#include <conio.h> // Para omar, revisa su biblioteca, hay muchos inputs como textcolor, colorbackground, etc
-#include <time.h> // Útil si en el futuro llegamos a agregar la fecha/hora real del sistema
 
+// ==========================================
+// FUNCION DE TIPIFICACION
+// ==========================================
 void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]){
     switch (tipo){
         case 1:
@@ -51,6 +55,10 @@ void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]){
     }
     return;
 }
+
+// ==========================================
+// ORDENAMIENTO DE PRIORIDAD
+// ==========================================
 void ord_priori(int x, int fila[]){
     int temp_idx;
     temp_idx = fila[x];
@@ -58,6 +66,10 @@ void ord_priori(int x, int fila[]){
     fila[x-1] = temp_idx;
     return;
 }
+
+// ==========================================
+// ABANDONO
+// ==========================================
 // Adicion V.2.1 Funcion para revisar si alguien sale de la fila
 void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int id_num[]){
     if (tipo[cola[j]] == 1 && espera_act >= 8) {
@@ -79,6 +91,10 @@ void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int i
     }
     return;
 }
+
+// ==========================================
+// REPORTES VISUALES
+// ==========================================
 void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[], int norm[], int max_espera[]){
     printf("--------------------------------------\n");
     printf(" CAJA %d\n", x);
@@ -90,6 +106,7 @@ void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[],
     printf("   Espera maxima: %d min\n", max_espera[x]);
     return;
 }
+
 void Reporte_final (int x, int atendidos, int se_fueron, int contador[]){
     printf("--------------------------------------\n");
     printf("           REPORTE FINAL\n");
@@ -102,7 +119,77 @@ void Reporte_final (int x, int atendidos, int se_fueron, int contador[]){
     printf(" Clientes que se fueron: %d\n", se_fueron);
     return;
 }
+
+// ==========================================
+// SISTEMA DE LOGS (.CSV y .TXT)
+// ==========================================
+void generar_logs(int total_gen, int tot_atendidos, int tot_sefueron, int cont_tipo[], int num_cajas, int cnt_caja[], int vip_caja[], int nuevo_caja[], int norm_caja[], int sum_espera_caja[], int max_espera_caja[]) {
+    
+    // GENERACION DEL ARCHIVO .CSV
+    FILE *archivo_csv = fopen("logs_banco.csv", "w");
+    if (archivo_csv != NULL) {
+        fprintf(archivo_csv, "Metrica,Valor\n");
+        fprintf(archivo_csv, "Clientes Generados,%d\n", total_gen);
+        fprintf(archivo_csv, "VIP Generados,%d\n", cont_tipo[0]);
+        fprintf(archivo_csv, "Nuevos Generados,%d\n", cont_tipo[1]);
+        fprintf(archivo_csv, "Normales Generados,%d\n", cont_tipo[2]);
+        fprintf(archivo_csv, "Total Atendidos,%d\n", tot_atendidos);
+        fprintf(archivo_csv, "Total Abandonos,%d\n", tot_sefueron);
+        
+        fprintf(archivo_csv, "\nCaja,Total Atendidos,VIP,Nuevos,Normales,Promedio Espera (seg),Espera Maxima (min)\n");
+        
+        for(int c = 1; c <= num_cajas; c++) {
+            double prom_espera = 0;
+            if (cnt_caja[c] > 0) {
+                prom_espera = (int)(((double)sum_espera_caja[c] / cnt_caja[c]) * 60 * 100) / 100.0;
+            }
+            fprintf(archivo_csv, "%d,%d,%d,%d,%d,%.2f,%d\n", c, cnt_caja[c], vip_caja[c], nuevo_caja[c], norm_caja[c], prom_espera, max_espera_caja[c]);
+        }
+        fclose(archivo_csv);
+        printf("\n  [LOG] Archivo 'logs_banco.csv' generado con exito.\n");
+    } else {
+        printf("\n  [ERROR] No se pudo crear el archivo CSV.\n");
+    }
+
+    // GENERACION DEL ARCHIVO .TXT
+    FILE *archivo_txt = fopen("logs_banco.txt", "w");
+    if (archivo_txt != NULL) {
+        fprintf(archivo_txt, "======================================\n");
+        fprintf(archivo_txt, "      REPORTE FINAL DEL SIMULADOR     \n");
+        fprintf(archivo_txt, "======================================\n");
+        fprintf(archivo_txt, "Clientes generados: %d\n", total_gen);
+        fprintf(archivo_txt, "  - VIP: %d\n", cont_tipo[0]);
+        fprintf(archivo_txt, "  - Nuevos: %d\n", cont_tipo[1]);
+        fprintf(archivo_txt, "  - Normales: %d\n", cont_tipo[2]);
+        fprintf(archivo_txt, "Clientes atendidos: %d\n", tot_atendidos);
+        fprintf(archivo_txt, "Clientes que se fueron: %d\n", tot_sefueron);
+        fprintf(archivo_txt, "--------------------------------------\n");
+        
+        for(int c = 1; c <= num_cajas; c++) {
+            double prom_espera = 0;
+            if (cnt_caja[c] > 0) {
+                prom_espera = (int)(((double)sum_espera_caja[c] / cnt_caja[c]) * 60 * 100) / 100.0;
+            }
+            fprintf(archivo_txt, "CAJA %d\n", c);
+            fprintf(archivo_txt, "  Clientes atendidos: %d\n", cnt_caja[c]);
+            fprintf(archivo_txt, "  - VIP: %d\n", vip_caja[c]);
+            fprintf(archivo_txt, "  - Nuevos: %d\n", nuevo_caja[c]);
+            fprintf(archivo_txt, "  - Normales: %d\n", norm_caja[c]);
+            fprintf(archivo_txt, "  Espera promedio: %.2f seg\n", prom_espera);
+            fprintf(archivo_txt, "  Espera maxima: %d min\n", max_espera_caja[c]);
+            fprintf(archivo_txt, "--------------------------------------\n");
+        }
+        fclose(archivo_txt);
+        printf(" Archivo 'logs_banco.txt' generado con exito.\n\n");
+    } else {
+        printf(" No se pudo crear el archivo TXT.\n\n");
+    }
+}
+
 int main() {
+    // ==========================================
+    // INICIALIZACION
+    // ==========================================
     srand(time(NULL));
 
     // Variables
@@ -116,10 +203,10 @@ int main() {
     int tiempo_max, prob_llegada, tipo_rand;
     int NUM_CAJAS;
 
-    // Arreglos por cada caja (indices 1..3, se declara tama�o 4)
+    // Arreglos por cada caja (indices 1..3, se declara tamaño 4)
     int caja_libre[4], fin_atencion[4], cliente_en_caja[4];
 
-    // Arreglos de cliente (indices 1..400, se declara tama�o 401)
+    // Arreglos de cliente (indices 1..400, se declara tamaño 401)
     int t_llegada[401], atendido[401], se_fue[401], tipo[401];
     int id_num[401], t_atencion[401], cola[401], t_espera[401];
     int t_salida[401], caja_asignada[401];
@@ -146,6 +233,9 @@ int main() {
     printf(" SIMULADOR DE FILA DE BANCO CON 3 CAJAS\n");
     printf("----------------------------------------\n");
 
+    // ==========================================
+    // BUCLE DEL RELOJ
+    // ==========================================
     do {
         printf("=== Minuto %d ===\n", reloj);
 
@@ -228,8 +318,9 @@ int main() {
 
     } while (reloj <= tiempo_max);
 
-
-    // Reporte final
+    // ==========================================
+    // REPORTE FINAL
+    // ==========================================
     int tot_atendidos, tot_sefueron;
     double prom_espera;
     int suma_temp, cnt_temp;
@@ -277,6 +368,7 @@ int main() {
             }
         }
     }
+    
     Reporte_final(i,tot_atendidos,tot_sefueron,cont_tipo);
 
     for (c = 1; c <= NUM_CAJAS; c++) {
@@ -291,5 +383,9 @@ int main() {
         reporte_por_caja(c,prom_espera,cnt_caja,vip_caja,nuevo_caja,norm_caja,max_espera_caja);
     }
 
+    //  AQUÍ SE LLAMA A LA FUNCIÓN DE LOGS JUSTO ANTES DE TERMINAR NO MOVER PORFA
+    generar_logs(i, tot_atendidos, tot_sefueron, cont_tipo, NUM_CAJAS, cnt_caja, vip_caja, nuevo_caja, norm_caja, sum_espera_caja, max_espera_caja);
+
     return 0;
+
 }
