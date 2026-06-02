@@ -185,7 +185,30 @@ void generar_logs(int total_gen, int tot_atendidos, int tot_sefueron, int cont_t
         printf(" No se pudo crear el archivo TXT.\n\n");
     }
 }
-
+// ==========================================
+// VISUALIZACIÓN GRAFICA EN TIEMPO REAL
+// ==========================================
+void dibujar_fila(int tam_cola) {
+    int max_visual = 20; // Tamaño máximo de la grafica
+    printf("  Fila actual: %2d | Grafica: [", tam_cola);
+    
+    for (int v = 0; v < max_visual; v++) {
+        if (v < tam_cola) {
+            // Imprime un bloque sólido (█) usando su código ASCII 
+            printf("%c", 219); 
+        } else {
+            // Imprime un bloque punteado (░) para el espacio vacio
+            printf("%c", 176); 
+        }
+    }
+    
+    // Si la fila supera el limite visual, indicamos el excedente
+    if (tam_cola > max_visual) {
+        printf("] +%d extra\n", tam_cola - max_visual);
+    } else {
+        printf("]\n");
+    }
+}
 int main() {
     // ==========================================
     // INICIALIZACION
@@ -314,6 +337,7 @@ int main() {
         }
 
         printf("  Cola actual: %d\n", tam_cola);
+        dibujar_fila(tam_cola);
         reloj = reloj + 1;
 
     } while (reloj <= tiempo_max);
