@@ -2,26 +2,29 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
-#include <time.h>
 
+
+void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]);
+void ord_priori(int x, int fila[]);
+void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int id_num[]);
+void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[], int norm[], int max_espera[]);
+void Reporte_final (int x, int atendidos, int se_fueron, int contador[]);
 void menuCabecera(void);
 void menuOpcionA(void);
 void menuOpcionB(void);
 void menuOpcionC(void);
-void cambiaTamanoLetra();
+void cambiaTamanoLetra(int ancho, int alto);
 void cambiaColorTexto(int colorTexto,int arg1);
-void reporteFinal();
+void reporteFinal(void);
 void error(void);
 void menuacotado(int x, int atendidos, int se_fueron, int contador[]);
+
 
 int main()
 {
     srand(time(NULL));
 
     int opc;
-
-
-    // Variables
     int i, j, k, c;
     int reloj, tam_cola;
     int cont_tipo[3];
