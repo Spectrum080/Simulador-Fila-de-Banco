@@ -221,12 +221,12 @@ int main()
         menuCabecera();
 
 
-        for(int i=0; i< 10; i++){
+        for(int i=0; i< 2; i++){
             printf("\n");
         }
-        printf("Elige la opcion para analizar...\n");
-        printf(" 1)VIP\n 2)Nuevos\n 3)Normal\n 4)Reporte final\n 5)Salir\n");
-        printf("Opcion: ");
+        printf("ELIGE LA OPCION PARA ANALIZAR ...\n\n");
+        printf(" 1)VIP\n 2)NUEVOS\n 3)NORMAL\n 4)REPORTE FINAL\n 5)SALIR\n\n");
+        printf("OPCION: ");
 
         opc=-1;
         scanf("%d", &opc);
