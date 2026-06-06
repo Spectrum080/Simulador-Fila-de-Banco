@@ -196,6 +196,7 @@ int main()
             }
         }
     }
+    /*
     Reporte_final(i,tot_atendidos,tot_sefueron,cont_tipo);
 
     for (c = 1; c <= NUM_CAJAS; c++) {
@@ -209,7 +210,7 @@ int main()
         }
         reporte_por_caja(c,prom_espera,cnt_caja,vip_caja,nuevo_caja,norm_caja,max_espera_caja);
     }
-
+    */
 
     cambiaTamanoLetra(8, 14);
     system("color F0");
@@ -321,6 +322,17 @@ int main()
             cambiaColorTexto(15,0);
             reporteFinal();
             Reporte_final(i,tot_atendidos,tot_sefueron,cont_tipo);
+            for (c = 1; c <= NUM_CAJAS; c++) {
+
+                if (cnt_caja[c] > 0) {
+                    suma_temp = sum_espera_caja[c];
+                    cnt_temp = cnt_caja[c];
+                    prom_espera = (int)(((double)suma_temp / cnt_temp) * 60 * 100) / 100.0;
+                } else {
+                    prom_espera = 0;
+                }
+                reporte_por_caja(c,prom_espera,cnt_caja,vip_caja,nuevo_caja,norm_caja,max_espera_caja);
+            }
             system("pause");
             break;
 
