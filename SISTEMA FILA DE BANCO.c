@@ -4,7 +4,7 @@
  //* Ingeniería en Sistemas Computacionales
  //* Lider de Proyecto: Carlos Gutierrez
  //* Equipo de Desarrollo: Luna Monroy Víctor Hugo, Esparragoza Morales Seth Carlos, Rodríguez Chua Santiago Antonio, Velasco Hernandez Omar, Tapia Pérez Jorge Arturo
- //* Periodo de Desarrollo: Abril 2026 - Mayo 2026
+ //* Periodo de Desarrollo: Abril 2026 - Junio 2026
  //* DESCRIPCIÓN DEL SISTEMA:
  //* Este programa implementa una simulación de eventos discretos en lenguaje C
  //* para gestionar la llegada, espera y atención de clientes en una caja bancaria.
@@ -12,14 +12,14 @@
  //* sistema de prioridades de 3 niveles:
  //* 1. VIP (Alta prioridad, menor tolerancia de espera)
  //* 2. Cliente Nuevo (Prioridad media)
-//* 3. Cliente Normal (Prioridad estándar, mayor tolerancia)
+ //* 3. Cliente Normal (Prioridad estándar, mayor tolerancia)
  //* * CARACTERÍSTICAS TÉCNICAS:
  //* - Generación estocástica de clientes basada en probabilidad porcentual por minuto.
  //* - Asignación de tiempos de atención variables mediante funciones aleatorias.
  //* - Lógica de "agente autónomo" para el abandono de la cola cuando el tiempo
  //* de espera supera la tolerancia según el tipo de cliente.
  //* - Reordenamiento dinámico de la cola para respetar la jerarquía de atención.
- //* * Notas de la versión: 1.1
+ //* * Notas de la versión: 1.1 (Integrado con Menú V2)
  //* Se refactorizó el pseudocódigo original para asegurar el correcto dimensionamiento.
  //* de memoria en arreglos y se corrigió el desfase temporal en la liberación de la caja.
  //*******************************************************************************//
@@ -33,188 +33,31 @@
 #include <windows.h>
 
 // ==========================================
-// FUNCION DE TIPIFICACION
+// FUNCIONES
 // ==========================================
-void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]){
-    switch (tipo){
-        case 1:
-            contador[0]= contador[0]+1;
-            id[x] = (contador[0]);
-            tiempo[x] = (rand() % 3) + 2;
-            break;
-        case 2:
-            contador[1]= contador[1]+1;
-            id[x] = (contador[1]);
-            tiempo[x] = (rand() % 4) + 3;
-            break;
-        case 3:
-            contador[2]= contador[2]+1;
-            id[x] = (contador[2]) * 10;
-            tiempo[x] = (rand() % 5) + 3;
-            break;
-    }
-    return;
-}
+void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]);
+void ord_priori(int x, int fila[]);
+void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int id_num[]);
+void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[], int norm[], int max_espera[]);
+void Reporte_final (int x, int atendidos, int se_fueron, int contador[]);
+void menuCabecera(void);
+void menuOpcionA(void);
+void menuOpcionB(void);
+void menuOpcionC(void);
+void cambiaTamanoLetra(int ancho, int alto);
+void cambiaColorTexto(int colorTexto,int arg1);
+void reporteFinal(void);
+void error(void);
+void menuacotado(int x, int atendidos, int se_fueron, int contador[]);
 
-// ==========================================
-// ORDENAMIENTO DE PRIORIDAD
-// ==========================================
-void ord_priori(int x, int fila[]){
-    int temp_idx;
-    temp_idx = fila[x];
-    fila[x] = fila[x-1];
-    fila[x-1] = temp_idx;
-    return;
-}
-
-// ==========================================
-// ABANDONO
-// ==========================================
-// Adicion V.2.1 Funcion para revisar si alguien sale de la fila
-void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int id_num[]){
-    if (tipo[cola[j]] == 1 && espera_act >= 8) {
-        se_fue[cola[j]] = 1;
-        printf("  [SE FUE] VIP ID: %d\n", id_num[cola[j]]);
-        return;
-    } else {
-        if (tipo[cola[j]] == 2 && espera_act >= 6) {
-            se_fue[cola[j]] = 1;
-            printf("  [SE FUE] NUEVO ID: %d\n", id_num[cola[j]]);
-            return;
-        } else {
-            if (tipo[cola[j]] == 3 && espera_act >= 10) {
-                se_fue[cola[j]] = 1;
-                printf("  [SE FUE] NORMAL ID: %d\n", id_num[cola[j]]);
-                return;
-            }
-        }
-    }
-    return;
-}
-
-// ==========================================
-// REPORTES VISUALES
-// ==========================================
-void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[], int norm[], int max_espera[]){
-    printf("--------------------------------------\n");
-    printf(" CAJA %d\n", x);
-    printf("   Clientes atendidos:  %d\n", cnt[x]);
-    printf("   - VIP:  %d\n", vip[x]);
-    printf("   - Nuevos: %d\n", nuevo[x]);
-    printf("   - Normales: %d\n", norm[x]);
-    printf("   Espera promedio: %.2f seg\n", promedio);
-    printf("   Espera maxima: %d min\n", max_espera[x]);
-    return;
-}
-
-void Reporte_final (int x, int atendidos, int se_fueron, int contador[]){
-    printf("--------------------------------------\n");
-    printf("           REPORTE FINAL\n");
-    printf("---------------------------------------\n");
-    printf(" Clientes generados: %d\n", x);
-    printf("   VIP: %d\n", contador[0]);
-    printf("   Nuevos: %d\n", contador[1]);
-    printf("   Normales: %d\n", contador[2]);
-    printf(" Clientes atendidos: %d\n", atendidos);
-    printf(" Clientes que se fueron: %d\n", se_fueron);
-    return;
-}
-
-// ==========================================
-// SISTEMA DE LOGS (.CSV y .TXT)
-// ==========================================
-void generar_logs(int total_gen, int tot_atendidos, int tot_sefueron, int cont_tipo[], int num_cajas, int cnt_caja[], int vip_caja[], int nuevo_caja[], int norm_caja[], int sum_espera_caja[], int max_espera_caja[]) {
-    
-    // GENERACION DEL ARCHIVO .CSV
-    FILE *archivo_csv = fopen("logs_banco.csv", "w");
-    if (archivo_csv != NULL) {
-        fprintf(archivo_csv, "Metrica,Valor\n");
-        fprintf(archivo_csv, "Clientes Generados,%d\n", total_gen);
-        fprintf(archivo_csv, "VIP Generados,%d\n", cont_tipo[0]);
-        fprintf(archivo_csv, "Nuevos Generados,%d\n", cont_tipo[1]);
-        fprintf(archivo_csv, "Normales Generados,%d\n", cont_tipo[2]);
-        fprintf(archivo_csv, "Total Atendidos,%d\n", tot_atendidos);
-        fprintf(archivo_csv, "Total Abandonos,%d\n", tot_sefueron);
-        
-        fprintf(archivo_csv, "\nCaja,Total Atendidos,VIP,Nuevos,Normales,Promedio Espera (seg),Espera Maxima (min)\n");
-        
-        for(int c = 1; c <= num_cajas; c++) {
-            double prom_espera = 0;
-            if (cnt_caja[c] > 0) {
-                prom_espera = (int)(((double)sum_espera_caja[c] / cnt_caja[c]) * 60 * 100) / 100.0;
-            }
-            fprintf(archivo_csv, "%d,%d,%d,%d,%d,%.2f,%d\n", c, cnt_caja[c], vip_caja[c], nuevo_caja[c], norm_caja[c], prom_espera, max_espera_caja[c]);
-        }
-        fclose(archivo_csv);
-        printf("\n  [LOG] Archivo 'logs_banco.csv' generado con exito.\n");
-    } else {
-        printf("\n  [ERROR] No se pudo crear el archivo CSV.\n");
-    }
-
-    // GENERACION DEL ARCHIVO .TXT
-    FILE *archivo_txt = fopen("logs_banco.txt", "w");
-    if (archivo_txt != NULL) {
-        fprintf(archivo_txt, "======================================\n");
-        fprintf(archivo_txt, "      REPORTE FINAL DEL SIMULADOR     \n");
-        fprintf(archivo_txt, "======================================\n");
-        fprintf(archivo_txt, "Clientes generados: %d\n", total_gen);
-        fprintf(archivo_txt, "  - VIP: %d\n", cont_tipo[0]);
-        fprintf(archivo_txt, "  - Nuevos: %d\n", cont_tipo[1]);
-        fprintf(archivo_txt, "  - Normales: %d\n", cont_tipo[2]);
-        fprintf(archivo_txt, "Clientes atendidos: %d\n", tot_atendidos);
-        fprintf(archivo_txt, "Clientes que se fueron: %d\n", tot_sefueron);
-        fprintf(archivo_txt, "--------------------------------------\n");
-        
-        for(int c = 1; c <= num_cajas; c++) {
-            double prom_espera = 0;
-            if (cnt_caja[c] > 0) {
-                prom_espera = (int)(((double)sum_espera_caja[c] / cnt_caja[c]) * 60 * 100) / 100.0;
-            }
-            fprintf(archivo_txt, "CAJA %d\n", c);
-            fprintf(archivo_txt, "  Clientes atendidos: %d\n", cnt_caja[c]);
-            fprintf(archivo_txt, "  - VIP: %d\n", vip_caja[c]);
-            fprintf(archivo_txt, "  - Nuevos: %d\n", nuevo_caja[c]);
-            fprintf(archivo_txt, "  - Normales: %d\n", norm_caja[c]);
-            fprintf(archivo_txt, "  Espera promedio: %.2f seg\n", prom_espera);
-            fprintf(archivo_txt, "  Espera maxima: %d min\n", max_espera_caja[c]);
-            fprintf(archivo_txt, "--------------------------------------\n");
-        }
-        fclose(archivo_txt);
-        printf(" Archivo 'logs_banco.txt' generado con exito.\n\n");
-    } else {
-        printf(" No se pudo crear el archivo TXT.\n\n");
-    }
-}
-// ==========================================
-// VISUALIZACIÓN GRAFICA EN TIEMPO REAL
-// ==========================================
-void dibujar_fila(int tam_cola) {
-    int max_visual = 20; // Tamaño máximo de la grafica
-    printf("  Fila actual: %2d | Grafica: [", tam_cola);
-    
-    for (int v = 0; v < max_visual; v++) {
-        if (v < tam_cola) {
-            // Imprime un bloque sólido (█) usando su código ASCII 
-            printf("%c", 219); 
-        } else {
-            // Imprime un bloque punteado (░) para el espacio vacio
-            printf("%c", 176); 
-        }
-    }
-    
-    // Si la fila supera el limite visual, indicamos el excedente
-    if (tam_cola > max_visual) {
-        printf("] +%d extra\n", tam_cola - max_visual);
-    } else {
-        printf("]\n");
-    }
-}
-int main() {
+int main()
+{
     // ==========================================
     // INICIALIZACION
     // ==========================================
     srand(time(NULL));
 
+    int opc;
     // Variables
     int i, j, k, c;
     int reloj, tam_cola;
@@ -226,10 +69,10 @@ int main() {
     int tiempo_max, prob_llegada, tipo_rand;
     int NUM_CAJAS;
 
-    // Arreglos por cada caja (indices 1..3, se declara tamaño 4)
+    // Arreglos por cada caja (indices 1..3, se declara tamaNo 4)
     int caja_libre[4], fin_atencion[4], cliente_en_caja[4];
 
-    // Arreglos de cliente (indices 1..400, se declara tamaño 401)
+    // Arreglos de cliente (indices 1..400, se declara tamaNo 401)
     int t_llegada[401], atendido[401], se_fue[401], tipo[401];
     int id_num[401], t_atencion[401], cola[401], t_espera[401];
     int t_salida[401], caja_asignada[401];
@@ -337,13 +180,13 @@ int main() {
         }
 
         printf("  Cola actual: %d\n", tam_cola);
-        dibujar_fila(tam_cola);
         reloj = reloj + 1;
 
     } while (reloj <= tiempo_max);
 
+
     // ==========================================
-    // REPORTE FINAL
+    // CÁLCULOS PARA REPORTE FINAL
     // ==========================================
     int tot_atendidos, tot_sefueron;
     double prom_espera;
@@ -392,24 +235,357 @@ int main() {
             }
         }
     }
-    
-    Reporte_final(i,tot_atendidos,tot_sefueron,cont_tipo);
 
-    for (c = 1; c <= NUM_CAJAS; c++) {
+    // ==========================================
+    // MENU INTERACTIVO
+    // ==========================================
+    cambiaTamanoLetra(8, 14);
+    system("color F0");
 
-        if (cnt_caja[c] > 0) {
-            suma_temp = sum_espera_caja[c];
-            cnt_temp = cnt_caja[c];
-            prom_espera = (int)(((double)suma_temp / cnt_temp) * 60 * 100) / 100.0;
-        } else {
-            prom_espera = 0;
+    do{        //MENU//
+        system("cls");
+        system("color F2");
+        cambiaColorTexto(0,15);
+        menuCabecera();
+
+
+        for(int i=0; i< 2; i++){
+            printf("\n");
         }
-        reporte_por_caja(c,prom_espera,cnt_caja,vip_caja,nuevo_caja,norm_caja,max_espera_caja);
-    }
+        printf("ELIGE LA OPCION PARA ANALIZAR ...\n\n");
+        printf(" 1)VIP\n 2)NUEVOS\n 3)NORMAL\n 4)REPORTE FINAL\n 5)SALIR\n\n");
+        printf("OPCION: ");
 
-    //  AQUÍ SE LLAMA A LA FUNCIÓN DE LOGS JUSTO ANTES DE TERMINAR NO MOVER PORFA
-    generar_logs(i, tot_atendidos, tot_sefueron, cont_tipo, NUM_CAJAS, cnt_caja, vip_caja, nuevo_caja, norm_caja, sum_espera_caja, max_espera_caja);
+        opc=-1;
+        scanf("%d", &opc);
+        int conteo=0;
+        while (getchar() != '\n');
 
+
+        switch(opc){
+        case 1:
+            system("cls");
+            system("color 07");
+            cambiaColorTexto(15,0);
+            menuOpcionC();
+            conteo=0;
+            for(int i_x = 1; i_x<=401; i_x++){
+
+                       if (tipo[i_x]==1){
+                            conteo=conteo+1;
+                            printf("ID VIP: %d\n",id_num[i_x]);
+                            printf("Caja: %d\n",caja_asignada[i_x]);
+                            printf("Minuto de atencion: %d\n",t_llegada[i_x]);
+                            printf("|||||||||||||||||||||||||||||||||||\n");
+                             if (conteo % 10 == 0 ){
+                                system("pause");
+                                system("cls");
+                                menuOpcionC();
+                            }
+                        }  //fin if
+            }  //fin for
+
+            system("pause");
+            break;
+
+        case 2:
+            system("cls");
+            system("color 07");
+            cambiaColorTexto(15,0);
+            menuOpcionA();
+            conteo=0;
+            for(int i_x = 1; i_x<=401; i_x++){
+
+                       if (tipo[i_x]==2){
+                            conteo=conteo+1;
+                            printf("ID Nuevo: %d\n",id_num[i_x]);
+                            printf("Caja: %d\n",caja_asignada[i_x]);
+                            printf("Minuto de atencion: %d\n",t_llegada[i_x]);
+                            printf("|||||||||||||||||||||||||||||||||||\n");
+                             if (conteo % 10 == 0 ){
+                                system("pause");
+                                system("cls");
+                                menuOpcionA();
+                            }
+                        }  //fin if
+            }  //fin for
+
+            system("pause");
+            break;
+
+        case 3:
+            system("cls");
+            system("color 07");
+            cambiaColorTexto(15,0);
+            menuOpcionB();
+             conteo=0;
+            for(int i_x = 1; i_x<=401; i_x++){
+
+                       if (tipo[i_x]==3){
+                            conteo=conteo+1;
+                            printf("ID VIP: %d\n",id_num[i_x]);
+                            printf("Caja: %d\n",caja_asignada[i_x]);
+                            printf("Minuto de atencion: %d\n",t_llegada[i_x]);
+                            printf("|||||||||||||||||||||||||||||||||||\n");
+                             if (conteo % 10 == 0 ){
+                                system("pause");
+                                system("cls");
+                                menuOpcionB();
+                            }
+                        }  //fin if
+            }  //fin for
+
+            system("pause");
+            break;
+
+        case 4:
+            system("cls");
+           system("color 07");
+            cambiaColorTexto(15,0);
+            reporteFinal();
+            Reporte_final(i,tot_atendidos,tot_sefueron,cont_tipo);
+            for (c = 1; c <= NUM_CAJAS; c++) {
+
+                if (cnt_caja[c] > 0) {
+                    suma_temp = sum_espera_caja[c];
+                    cnt_temp = cnt_caja[c];
+                    prom_espera = (int)(((double)suma_temp / cnt_temp) * 60 * 100) / 100.0;
+                } else {
+                    prom_espera = 0;
+                }
+                reporte_por_caja(c,prom_espera,cnt_caja,vip_caja,nuevo_caja,norm_caja,max_espera_caja);
+            }
+            system("pause");
+            break;
+
+        case 5:
+
+            opc=0;
+            break;
+
+        default:
+            system("cls");
+            cambiaColorTexto(12,15);
+            error();
+            system("pause");
+            break;
+        }
+
+    }while(opc!=0);
+
+    system("cls");
+
+    cambiaTamanoLetra(8, 16);
+    system("color 07");
+    cambiaColorTexto(15,0);
+    printf("Termina el menu\n");
     return 0;
+}
 
+// ==========================================
+// FUNCION DE TIPIFICACION
+// ==========================================
+void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]){
+    switch (tipo){
+        case 1:
+            contador[0]= contador[0]+1;
+            id[x] = (contador[0]);
+            tiempo[x] = (rand() % 3) + 2;
+            break;
+        case 2:
+            contador[1]= contador[1]+1;
+            id[x] = (contador[1]);
+            tiempo[x] = (rand() % 4) + 3;
+            break;
+        case 3:
+            contador[2]= contador[2]+1;
+            id[x] = (contador[2]) * 10;
+            tiempo[x] = (rand() % 5) + 3;
+            break;
+    }
+    return;
+}
+
+// ==========================================
+// ORDENAMIENTO DE PRIORIDAD
+// ==========================================
+void ord_priori(int x, int fila[]){
+    int temp_idx;
+    temp_idx = fila[x];
+    fila[x] = fila[x-1];
+    fila[x-1] = temp_idx;
+    return;
+}
+
+// ==========================================
+// ABANDONO
+// ==========================================
+// Adicion V.2.1 Funcion para revisar si alguien sale de la fila
+void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int id_num[]){
+    if (tipo[cola[j]] == 1 && espera_act >= 8) {
+        se_fue[cola[j]] = 1;
+        printf("  [SE FUE] VIP ID: %d\n", id_num[cola[j]]);
+        return;
+    } else {
+        if (tipo[cola[j]] == 2 && espera_act >= 6) {
+            se_fue[cola[j]] = 1;
+            printf("  [SE FUE] NUEVO ID: %d\n", id_num[cola[j]]);
+            return;
+        } else {
+            if (tipo[cola[j]] == 3 && espera_act >= 10) {
+                se_fue[cola[j]] = 1;
+                printf("  [SE FUE] NORMAL ID: %d\n", id_num[cola[j]]);
+                return;
+            }
+        }
+    }
+    return;
+}
+
+// ==========================================
+// REPORTES VISUALES
+// ==========================================
+void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[], int norm[], int max_espera[]){
+    printf("--------------------------------------\n");
+    printf(" CAJA %d\n", x);
+    printf("   Clientes atendidos:  %d\n", cnt[x]);
+    printf("   - VIP:  %d\n", vip[x]);
+    printf("   - Nuevos: %d\n", nuevo[x]);
+    printf("   - Normales: %d\n", norm[x]);
+    printf("   Espera promedio: %.2f seg\n", promedio);
+    printf("   Espera maxima: %d min\n", max_espera[x]);
+    return;
+}
+
+void Reporte_final (int x, int atendidos, int se_fueron, int contador[]){
+    //printf("--------------------------------------\n");
+    //printf("           REPORTE FINAL\n");
+    //printf("---------------------------------------\n");
+    printf(" Clientes generados: %d\n", x);
+    printf("   VIP: %d\n", contador[0]);
+    printf("   Nuevos: %d\n", contador[1]);
+    printf("   Normales: %d\n", contador[2]);
+    printf(" Clientes atendidos: %d\n", atendidos);
+    printf(" Clientes que se fueron: %d\n", se_fueron);
+    return;
+}
+
+// ==========================================
+// GRAFICOS DE CONSOLA Y MENUS (ASCII ART)
+// ==========================================
+void menuCabecera(void){
+    printf(" /$$      /$$\n");
+    printf("| $$$    /$$$\n");
+    printf("| $$$$  /$$$$  /$$$$$$  /$$$$$$$  /$$   /$$\n");
+    printf("| $$ $$/$$ $$ /$$__  $$| $$__  $$| $$  | $$\n");
+    printf("| $$  $$$| $$| $$$$$$$$| $$  \\ $$| $$  | $$\n");
+    printf("| $$\\  $ | $$| $$_____/| $$  | $$| $$  | $$\n");
+    printf("| $$ \\/  | $$|  $$$$$$$| $$  | $$|  $$$$$$/\n");
+    printf("|__/     |__/ \\_______/|__/  |__/ \\______/ \n");
+    printf("-----------------------------------------------\n");
+}
+
+
+void menuOpcionA(void){
+    printf(" /$$$$$$$  /$$   /$$  /$$$$$$  /$$    /$$ /$$$$$$   /$$$$$$$\n");
+    printf("| $$__  $$| $$  | $$ /$$__  $$|  $$  /$$//$$__  $$ /$$_____/\n");
+    printf("| $$  \\ $$| $$  | $$| $$$$$$$$ \\  $$/$$/| $$  \\ $$|  $$$$$$ \n");
+    printf("| $$  | $$| $$  | $$| $$_____/  \\  $$$/ | $$  | $$ \\____  $$\n");
+    printf("| $$  | $$|  $$$$$$/|  $$$$$$$   \\  $/  |  $$$$$$/ /$$$$$$$/\n");
+    printf("|__/  |__/ \\______/  \\_______/    \\_/    \\______/ |_______/ \n");
+    printf("-------------------------------------------------------------------\n");
+}
+
+void menuOpcionB(void){
+printf("                                                      $$\\                    \n");
+printf("                                                      $$ |                    \n");
+printf("$$$$$$$\\   $$$$$$\\   $$$$$$\\  $$$$$$\\$$$$\\   $$$$$$\\  $$ | $$$$$$\\   $$$$$$$\\ \n");
+printf("$$  __$$\\ $$  __$$\\ $$  __$$\\ $$  _$$  _$$\\  \\____$$\\ $$ |$$  __$$\\ $$  _____|\n");
+printf("$$ |  $$ |$$ /  $$ |$$ |  \\__|$$ / $$ / $$ | $$$$$$$ |$$ |$$$$$$$$ |\\$$$$$$\\  \n");
+printf("$$ |  $$ |$$ |  $$ |$$ |      $$ | $$ | $$ |$$  __$$ |$$ |$$   ____| \\____$$\\ \n");
+printf("$$ |  $$ |\\$$$$$$  |$$ |      $$ | $$ | $$ |\\$$$$$$$ |$$ |\\$$$$$$$\\ $$$$$$$  |\n");
+printf("\\__|  \\__| \\______/ \\__|      \\__| \\__| \\__| \\_______|\\__| \\_______|\\_______/ \n");
+printf("--------------------------------------------------------------------------------\n");
+
+}
+
+void menuOpcionC(void){
+printf("           $$\\ \n");
+printf("           \\__|     \n");
+printf("$$\\    $$\\ $$\\  $$$$$$\  \n");
+printf("\\$$\\  $$  |$$ |$$  __$$\ \n");
+printf(" \\$$\\$$  / $$ |$$ /  $$ |\n");
+printf("  \\$$$  /  $$ |$$ |  $$ |\n");
+printf("   \\$  /   $$ |$$$$$$$  |\n");
+printf("    \\_/    \\__|$$  ____/ \n");
+printf("               $$ |      \n");
+printf("               $$ |      \n");
+printf("               \\__|      \n");
+printf("--------------------------\n");
+}
+
+// ==========================================
+// CONTROL DE FORMATO EN CONSOLA
+// ==========================================
+void cambiaTamanoLetra(int ancho, int alto) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_FONT_INFOEX fontInfo;
+
+    fontInfo.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+
+
+    GetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
+
+
+    fontInfo.dwFontSize.X = ancho;
+    fontInfo.dwFontSize.Y = alto;
+
+    SetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
+}
+
+void cambiaColorTexto(int colorTexto,int arg1) {
+    int colorFinal=(arg1 * 16)+ colorTexto;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorFinal);
+}
+
+void reporteFinal(void){
+printf("                                                     /$$                      /$$$$$$  /$$                     /$$\n");
+printf("                                                    | $$                     /$$__  $$|__/                    | $$\n");
+printf("  /$$$$$$   /$$$$$$   /$$$$$$   /$$$$$$   /$$$$$$  /$$$$$$    /$$$$$$       | $$  \\__/ /$$ /$$$$$$$   /$$$$$$ | $$\n");
+printf(" /$$__  $$ /$$__  $$ /$$__  $$ /$$__  $$ /$$__  $$|_  $$_/   /$$__  $$      | $$$$    | $$| $$__  $$ |____  $$| $$\n");
+printf("| $$  \\__/| $$$$$$$$| $$  \\ $$| $$  \\ $$| $$  \\__/  | $$    | $$$$$$$$      | $$_/    | $$| $$  \\ $$  /$$$$$$$| $$\n");
+printf("| $$      | $$_____/| $$  | $$| $$  | $$| $$        | $$ /$$| $$_____/      | $$      | $$| $$  | $$ /$$__  $$| $$\n");
+printf("| $$      |  $$$$$$$| $$$$$$$/|  $$$$$$/| $$        |  $$$$/|  $$$$$$$      | $$      | $$| $$  | $$|  $$$$$$$| $$\n");
+printf("|__/       \\_______/| $$____/  \\______/ |__/         \\___/   \\_______/      |__/      |__/|__/  |__/ \\_______/|__/\n");
+printf("                    | $$                                                                                          \n");
+printf("                    | $$                                                                                          \n");
+printf("                    |__/                                                                                          \n");
+printf("------------------------------------------------------------------------------------------------------------------------\n\n");
+
+}
+
+void error(void){
+
+printf("  /$$$$$$   /$$$$$$   /$$$$$$   /$$$$$$   /$$$$$$ \n");
+printf(" /$$__  $$ /$$__  $$ /$$__  $$ /$$__  $$ /$$__  $$ \n");
+printf("| $$$$$$$$| $$  \\__/| $$  \\__/| $$  \\ $$| $$  \\__/ \n");
+printf("| $$_____/| $$      | $$      | $$  | $$| $$      \n");
+printf("|  $$$$$$$| $$      | $$      |  $$$$$$/| $$      \n");
+printf(" \\_______/|__/      |__/       \\______/ |__/      \n");
+printf("---------------------------------------------------\n");
+}
+
+
+void menuacotado(int x, int atendidos, int se_fueron, int contador[]){
+// son 32 lineas en tu lap
+    reporteFinal();
+    printf(" Clientes generados: %d\n", x);
+    printf("   VIP: %d\n", contador[0]);
+    printf("   Nuevos: %d\n", contador[1]);
+    printf("   Normales: %d\n", contador[2]);
+    printf(" Clientes atendidos: %d\n", atendidos);
+    printf(" Clientes que se fueron: %d\n", se_fueron);
+    for(int i=1;i<=8;i++){
+        printf("\n");
+    }
 }
