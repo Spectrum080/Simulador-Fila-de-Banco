@@ -27,14 +27,15 @@
 // ==========================================
 // LIBRERIAS
 // ==========================================
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <windows.h>
+#include <stdio.h>      // Funciones básica de entrada/salida (printf, scanf)
+#include <stdlib.h>     // Funciones de uso general (rand, srand, system)
+#include <time.h>       // Funciones para manipular el tiempo (usado para la aleatoridad)
+#include <windows.h>    // Funciones específicas de Windows (colores de consola, tamaño de fuente)
 
 // ==========================================
 // FUNCIONES
 // ==========================================
+// Declaración anticipada de las funciones para que el compilador las reconozca antes del main
 void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]);
 void ord_priori(int x, int fila[]);
 void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int id_num[]);
@@ -100,7 +101,7 @@ int main()
     printf("----------------------------------------\n");
 
     // ==========================================
-    // BUCLE DEL RELOJ
+    // BUCLE PRINCIPAL DE LA SIMULACIÓN (RELOJ)
     // ==========================================
     do {
         printf("=== Minuto %d ===\n", reloj);
@@ -186,7 +187,7 @@ int main()
 
 
     // ==========================================
-    // CÁLCULOS PARA REPORTE FINAL
+    // CÁLCULOS ESTADÍSTICOS PARA REPORTE FINAL
     // ==========================================
     int tot_atendidos, tot_sefueron;
     double prom_espera;
@@ -237,16 +238,16 @@ int main()
     }
 
     // ==========================================
-    // MENU INTERACTIVO
+    // MENU INTERACTIVO POST-SIMULACIÓN
     // ==========================================
-    cambiaTamanoLetra(8, 14);
-    system("color F0");
+    cambiaTamanoLetra(8, 14); // Ajusta tamaño de consola de Windows
+    system("color F0");       // Cambia fondo blanco, texto negro
 
     do{        //MENU//
-        system("cls");
+        system("cls");     // Limpia pantalla
         system("color F2");
         cambiaColorTexto(0,15);
-        menuCabecera();
+        menuCabecera(); 
 
 
         for(int i=0; i< 2; i++){
@@ -383,33 +384,34 @@ int main()
 }
 
 // ==========================================
-// FUNCION DE TIPIFICACION
+// FUNCION DE TIPIFICACION (Generación de IDs y Tiempos)
 // ==========================================
 void valores_tipo(int x,int tipo,int contador[],int id[],int tiempo[]){
     switch (tipo){
-        case 1:
+        case 1: // VIP
             contador[0]= contador[0]+1;
             id[x] = (contador[0]);
-            tiempo[x] = (rand() % 3) + 2;
+            tiempo[x] = (rand() % 3) + 2; // Tardan entre 2 y 4 minutos
             break;
-        case 2:
+        case 2: // NUEVO
             contador[1]= contador[1]+1;
             id[x] = (contador[1]);
-            tiempo[x] = (rand() % 4) + 3;
+            tiempo[x] = (rand() % 4) + 3; // Tardan entre 3 y 6 minutos
             break;
-        case 3:
+        case 3: // NORMAL
             contador[2]= contador[2]+1;
-            id[x] = (contador[2]) * 10;
-            tiempo[x] = (rand() % 5) + 3;
+            id[x] = (contador[2]) * 10; // Se multiplica x 10 para diferenciar su ID visualmente
+            tiempo[x] = (rand() % 5) + 3; // Tardan entre 3 y 7 minutos
             break;
     }
     return;
 }
 
 // ==========================================
-// ORDENAMIENTO DE PRIORIDAD
+// ORDENAMIENTO DE PRIORIDAD (Swap Básico)
 // ==========================================
 void ord_priori(int x, int fila[]){
+    // Intercambia el valor en la posición x con el de la posición x-1
     int temp_idx;
     temp_idx = fila[x];
     fila[x] = fila[x-1];
@@ -418,21 +420,24 @@ void ord_priori(int x, int fila[]){
 }
 
 // ==========================================
-// ABANDONO
+// LÓGICA DE ABANDONO DE LA FILA (Tolerancia)
 // ==========================================
 // Adicion V.2.1 Funcion para revisar si alguien sale de la fila
 void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int id_num[]){
+    // VIP: Poca paciencia (se van a los 8 minutos)
     if (tipo[cola[j]] == 1 && espera_act >= 8) {
         se_fue[cola[j]] = 1;
         printf("  [SE FUE] VIP ID: %d\n", id_num[cola[j]]);
         return;
     } else {
         if (tipo[cola[j]] == 2 && espera_act >= 6) {
+        // NUEVOS: Menos paciencia (se van a los 6 minutos)
             se_fue[cola[j]] = 1;
             printf("  [SE FUE] NUEVO ID: %d\n", id_num[cola[j]]);
             return;
         } else {
             if (tipo[cola[j]] == 3 && espera_act >= 10) {
+             // NORMALES: Más tolerancia (se van hasta los 10 minutos)
                 se_fue[cola[j]] = 1;
                 printf("  [SE FUE] NORMAL ID: %d\n", id_num[cola[j]]);
                 return;
@@ -443,7 +448,7 @@ void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int i
 }
 
 // ==========================================
-// REPORTES VISUALES
+// REPORTES VISUALES POR CAJA
 // ==========================================
 void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[], int norm[], int max_espera[]){
     printf("--------------------------------------\n");
@@ -456,7 +461,9 @@ void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[],
     printf("   Espera maxima: %d min\n", max_espera[x]);
     return;
 }
-
+// ==========================================
+// IMPRESIÓN DEL REPORTE FINAL GLOBAL
+// ==========================================
 void Reporte_final (int x, int atendidos, int se_fueron, int contador[]){
     //printf("--------------------------------------\n");
     //printf("           REPORTE FINAL\n");
