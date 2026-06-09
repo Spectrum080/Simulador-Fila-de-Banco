@@ -347,6 +347,8 @@ int main()
            system("color 07");
             cambiaColorTexto(15,0);
             reporteFinal();
+
+         //Imprime la cantidad de clientes(NORMAL, VIP, NUEVOS) generados, antendidos y que se fueron en TOTAL
             Reporte_final(i,tot_atendidos,tot_sefueron,cont_tipo);
             for (c = 1; c <= NUM_CAJAS; c++) {
 
@@ -357,6 +359,8 @@ int main()
                 } else {
                     prom_espera = 0;
                 }
+
+             //Imprime el total de clientes(NORMAL, VIP, NUEVOS) y tiempos de espera POR CAJA
                 reporte_por_caja(c,prom_espera,cnt_caja,vip_caja,nuevo_caja,norm_caja,max_espera_caja);
             }
             system("pause");
