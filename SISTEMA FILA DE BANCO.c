@@ -368,12 +368,14 @@ int main()
 
         case 5:
 
+         //Opcion que da la SALIDA del Sistema de fila de banco
             opc=0;
             break;
 
         default:
             system("cls");
             cambiaColorTexto(12,15);
+         //Mensaje de ERROR en caso de que el usuario se equivoque al ingresar la opcion
             error();
             system("pause");
             break;
