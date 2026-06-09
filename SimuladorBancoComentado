@@ -23,15 +23,17 @@
  //* Se refactorizó el pseudocódigo original para asegurar el correcto dimensionamiento.
  //* de memoria en arreglos y se corrigió el desfase temporal en la liberación de la caja.
  //*******************************************************************************//
-
+// ==========================================
 // LIBRERÍAS
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <windows.h>
+// ==========================================
+#include <stdio.h>      // Funciones básica de entrada/salida (printf, scanf)
+#include <stdlib.h>     // Funciones de uso general (rand, srand, system)
+#include <time.h>       // Funciones para manipular el tiempo (usado para la aleatoridad)
+#include <windows.h>    // Funciones específicas de Windows (colores de consola, tamaño de fuente)
 
+//==========================================
 // REGISTRO PREVIO DE FUNCIONES (Prototipos)
-//------------------------------------------------------------------------------------------
+//==========================================
 // Se listan aquí arriba para que el sistema las conozca desde el inicio
 // y nos permita estructurar el programa de forma limpia.
 
@@ -52,7 +54,9 @@ void menuacotado(int x, int atendidos, int se_fueron, int contador[]); // Report
 
 int main()
 {
+    // ==========================================
     // INICIALIZACION
+    // ==========================================
     srand(time(NULL)); // Temporizador para variar números aleatorios en cada ejecución
 
     // --- Variables de Control y Bucles ---
@@ -98,7 +102,9 @@ int main()
     tiempo_max = 400; // La simulación correrá durante 400 minutos
     prob_llegada = 60; // 60% de probabilidad de que entre un cliente por minuto
 
-   // ====== CICLO PRINCIPAL DE SIMULACIÓN ======
+    // ==========================================
+    // BUCLE PRINCIPAL DE LA SIMULACIÓN (RELOJ)
+    // ==========================================
     do {
 
         if ((rand() % 100) < prob_llegada) { // Generacion de clientes
@@ -173,7 +179,9 @@ int main()
 
     } while (reloj <= tiempo_max); // El bucle se repite mientras el reloj (tiempo actual) sea menor o igual al tiempo máximo definido.
 
+    // ==========================================
     // CÁLCULOS ESTADÍSTICOS PARA REPORTE FINAL
+    // ==========================================
     int tot_atendidos, tot_sefueron; // Variables que almacenan el total de clientes atendidos y los que abandonaron el sistema.
     double prom_espera; // Variable para guardar el promedio de tiempo de espera por caja.
     int suma_temp, cnt_temp; // Variables auxiliares para cálculos temporales.
@@ -222,7 +230,9 @@ int main()
         }
     }
 
+    // ==========================================
     // MENU INTERACTIVO POST-SIMULACIÓN
+    // ==========================================
     cambiaTamanoLetra(8, 14); // Ajusta tamaño de consola de Windows
     system("color F0");       // Cambia fondo blanco, texto negro
 
