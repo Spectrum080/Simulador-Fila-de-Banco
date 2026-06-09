@@ -272,6 +272,7 @@ int main()
             conteo=0;
             for(int i_x = 1; i_x<=401; i_x++){
 
+             //Imprime el ID, la caja de atencion y los minutos de atencion de los clientes VIP
                        if (tipo[i_x]==1){
                             conteo=conteo+1;
                             printf("ID VIP: %d\n",id_num[i_x]);
@@ -297,6 +298,7 @@ int main()
             conteo=0;
             for(int i_x = 1; i_x<=401; i_x++){
 
+             //Imprime el ID, la caja de atencion y los minutos de atencion de los clientes NUEVOS
                        if (tipo[i_x]==2){
                             conteo=conteo+1;
                             printf("ID Nuevo: %d\n",id_num[i_x]);
@@ -322,9 +324,10 @@ int main()
              conteo=0;
             for(int i_x = 1; i_x<=401; i_x++){
 
+             //Imprime el ID, la caja de atencion y los minutos de atencion de los clientes NORMALES
                        if (tipo[i_x]==3){
                             conteo=conteo+1;
-                            printf("ID VIP: %d\n",id_num[i_x]);
+                            printf("ID Normales: %d\n",id_num[i_x]);
                             printf("Caja: %d\n",caja_asignada[i_x]);
                             printf("Minuto de atencion: %d\n",t_llegada[i_x]);
                             printf("|||||||||||||||||||||||||||||||||||\n");
