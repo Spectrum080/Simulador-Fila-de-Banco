@@ -22,10 +22,6 @@ Proyecto Integrador desarrollado en la **Universidad del Valle de México (UVM) 
   2. **Nuevo:** Prioridad media, tolerancia de espera moderada (abandona a los 6 min).
   3. **Normal:** Prioridad estándar, mayor tiempo de atención, alta tolerancia de espera (abandona a los 10 min).
 * **Agentes Autónomos (Abandono):** Algoritmo de deserción que purga de la cola a los clientes cuyo tiempo de espera supera su límite de tolerancia.
-* **Visualización en Tiempo Real:** Renderizado de una gráfica ASCII en consola (utilizando caracteres de bloque `█` y `░`) para observar la saturación de la fila de manera dinámica.
-* **Persistencia de Datos:** Exportación automática de métricas operativas. Al finalizar la simulación, el sistema genera:
-  * `logs_banco.csv`: Desglose tabular listo para análisis e importación en software de hojas de cálculo.
-  * `logs_banco.txt`: Reporte estructurado en texto plano.
 
 ---
 
@@ -43,27 +39,12 @@ git clone [https://github.com/Spectrum080/Simulador-Fila-de-Banco.git](https://g
 cd Simulador-Fila-de-Banco
 
 # 3. Compilar el archivo fuente
-gcc SISTEMAFILABANCOV1.2.c -o simulador_banco.exe
+gcc SISTEMAFILABANCOV2.c -o simulador_banco.exe
 
 # 4. Ejecutar el simulador
 simulador_banco.exe
 
 ```
 
----
-
-##  Estructura de Exportación de Datos
-
-Al finalizar la ejecución de los 400 minutos, los archivos de registro se guardarán en el mismo directorio (CWD) desde donde se lanzó el ejecutable. Las métricas capturadas incluyen:
-
-* Total de clientes generados y clasificados por tipo.
-* Total de deserciones (clientes perdidos por límite de tolerancia).
-* Estadísticas por caja (1 a 3): Clientes atendidos, tiempo de espera promedio (en segundos) y tiempo de espera máximo (en minutos).
-
----
 
 Proyecto Integrador desarrollado en la **Universidad del Valle de México (UVM) - Campus Reforma**, para la carrera de Ingeniería en Sistemas Computacionales, cursando el segundo semestre en Lógica y Programación Estructurada, impartida por el profesor César Antonio Rios Olivares.
-
-```
-
-```
