@@ -275,7 +275,7 @@ int main()
             cambiaColorTexto(15,0);
             menuOpcionC();
             conteo=0;
-            for(int i_x = 1; i_x<=401; i_x++){
+            for(int i_x = 1; i_x<=i; i_x++){
 
                      //Imprime el ID, la caja de atencion y los minutos de atencion de los clientes VIP
 
@@ -305,7 +305,7 @@ int main()
             cambiaColorTexto(15,0);
             menuOpcionA();
             conteo=0;
-            for(int i_x = 1; i_x<=401; i_x++){
+            for(int i_x = 1; i_x<=i; i_x++){
                     //Imprime el ID, la caja de atencion y los minutos de atencion de los clientes NUEVOS
 
                        if (tipo[i_x]==2){
@@ -332,7 +332,7 @@ int main()
             cambiaColorTexto(15,0);
             menuOpcionB();
              conteo=0;
-            for(int i_x = 1; i_x<=401; i_x++){
+            for(int i_x = 1; i_x<=i; i_x++){
                     //Imprime el ID, la caja de atencion y los minutos de atencion de los clientes Frecuentes
 
                        if (tipo[i_x]==3){
