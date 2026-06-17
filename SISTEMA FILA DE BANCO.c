@@ -379,12 +379,14 @@ int main()
             system("cls");
             system("color 07");
             cambiaColorTexto(15,0);
-            printf("Gutierrez Cardenas Carlos Jose \n");
-            printf("Luna Monroy Víctor Hugo \n");
-            printf("Esparragoza Morales Seth Carlos \n");
-            printf("Rodríguez Chua Santiago Antonio \n");
-            printf("Velasco Hernandez Omar \n");
-            printf("Tapia Pérez Jorge Arturo \n");
+            printf("=====================CREDITOS=====================\n\n");
+            printf("Gutierrez Cardenas Carlos Jose: Lider del equipo \n\n");
+            printf("Luna Monroy Victor Hugo: Especialista de logica \n\n");
+            printf("Esparragoza Morales Seth Carlos: Desarrollador de interfaz \n\n");
+            printf("Rodriguez Chua Santiago Antonio: Aanalista de datos\n\n");
+            printf("Velasco Hernandez Omar: Desarrollador de interfaz \n\n");
+            printf("Tapia Perez Jorge Arturo: Especialista de logica  \n\n");
+            printf("===================================================\n");
             system("pause");
             break;
 
@@ -486,7 +488,7 @@ void reporte_por_caja(int x, double promedio, int cnt[], int vip[], int nuevo[],
     printf("   Clientes atendidos:  %d\n", cnt[x]);
     printf("   - VIP:  %d\n", vip[x]);
     printf("   - Nuevos: %d\n", nuevo[x]);
-    printf("   - Normales: %d\n", norm[x]);
+    printf("   - Frecuentes : %d\n", norm[x]);
     printf("   Espera promedio: %.2f seg\n", promedio);
     printf("   Espera maxima: %d min\n", max_espera[x]);
     return;
@@ -502,7 +504,7 @@ void Reporte_final (int x, int atendidos, int se_fueron, int contador[]){
     printf(" Clientes generados: %d\n", x);
     printf("   VIP: %d\n", contador[0]);
     printf("   Nuevos: %d\n", contador[1]);
-    printf("   Normales: %d\n", contador[2]);
+    printf("   Frecuentes: %d\n", contador[2]);
     printf(" Clientes atendidos: %d\n", atendidos);
     printf(" Clientes que se fueron: %d\n", se_fueron);
     return;
@@ -512,15 +514,17 @@ void Reporte_final (int x, int atendidos, int se_fueron, int contador[]){
 // GRAFICOS DE CONSOLA Y MENUS (ASCII ART)
 // ==========================================
 void menuCabecera(void){
-printf(" /$$      /$$                              \n");
-printf("| $$$    /$$$                              \n");
-printf("| $$$$  /$$$$  /$$$$$$  /$$$$$$$  /$$   /$$\n");
-printf("| $$ $$/$$ $$ /$$__  $$| $$__  $$| $$  | $$\n");
-printf("| $$  $$$| $$| $$$$$$$$| $$  \\ $$| $$  | $$\n");
-printf("| $$\\  $ | $$| $$_____/| $$  | $$| $$  | $$\n");
-printf("| $$ \\/  | $$|  $$$$$$$| $$  | $$|  $$$$$$/\n");
-printf("|__/     |__/ \\_______/|__/  |__/ \\______/ \n");
-printf("-------------------------------------------------\n");
+printf("           /$$                         /$$                 /$$                            /$$$$$$  /$$ /$$                       /$$                 /$$                                                        \n");
+printf("          |__/                        | $$                | $$                           /$$__  $$|__/| $$                      | $$                | $$                                                        \n");
+printf("  /$$$$$$$ /$$ /$$$$$$/$$$$  /$$   /$$| $$  /$$$$$$   /$$$$$$$  /$$$$$$   /$$$$$$       | $$  \\__/ /$$| $$  /$$$$$$         /$$$$$$$  /$$$$$$       | $$$$$$$   /$$$$$$  /$$$$$$$   /$$$$$$$  /$$$$$$          \n");
+printf(" /$$_____/| $$| $$_  $$_  $$| $$  | $$| $$ |____  $$ /$$__  $$ /$$__  $$ /$$__  $$      | $$$$    | $$| $$ |____  $$       /$$__  $$ /$$__  $$      | $$__  $$ |____  $$| $$__  $$ /$$_____/ /$$__  $$          \n");
+printf("|  $$$$$$ | $$| $$ \\ $$ \\ $$| $$  | $$| $$  /$$$$$$$| $$  | $$| $$  \\ $$| $$  \\__/      | $$_/    | $$| $$  /$$$$$$$      | $$  | $$| $$$$$$$$      | $$  \\ $$  /$$$$$$$| $$  \\ $$| $$      | $$  \\ $$   \n");
+printf(" \\____  $$| $$| $$ | $$ | $$| $$  | $$| $$ /$$__  $$| $$  | $$| $$  | $$| $$            | $$      | $$| $$ /$$__  $$      | $$  | $$| $$_____/      | $$  | $$ /$$__  $$| $$  | $$| $$      | $$  | $$         \n");
+printf(" /$$$$$$$/| $$| $$ | $$ | $$|  $$$$$$/| $$|  $$$$$$$|  $$$$$$$|  $$$$$$/| $$            | $$      | $$| $$|  $$$$$$$      |  $$$$$$$|  $$$$$$$      | $$$$$$$/|  $$$$$$$| $$  | $$|  $$$$$$$|  $$$$$$/          \n");
+printf("|_______/ |__/|__/ |__/ |__/ \______/ |__/ \\_______/ \\_______/ \\______/ |__/            |__/      |__/|__/ \\_______/       \\_______/ \\_______/      |_______/  \\_______/|__/  |__/ \\_______/ \\______/  \n");
+
+
+
 }
 
 
