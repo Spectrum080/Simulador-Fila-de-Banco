@@ -375,7 +375,7 @@ int main()
             system("color 07");
             cambiaColorTexto(15,0);
             printf("=====================CREDITOS=====================\n\n");
-         
+
             printf("==LIDER DE EQUIPO==\n\n");
             printf(" Carlos Jose Gutierrez Cardenas \n Matricula: 010223638\n\n");
 
@@ -389,7 +389,7 @@ int main()
             printf("\n==DESARROLLADOR DE INTERFAZ==\n\n");
             printf(" Seth Carlos Esparragoza Morales \n Matricula: 010223617\n\n");
             printf(" Omar Velasco Hernandez \n Matricula: 010224137\n\n");
-         
+
             printf("===================================================\n");
             system("pause");
             break;
@@ -616,19 +616,4 @@ printf("| $$_____/| $$      | $$      | $$  | $$| $$      \n");
 printf("|  $$$$$$$| $$      | $$      |  $$$$$$/| $$      \n");
 printf(" \\_______/|__/      |__/       \\______/ |__/      \n");
 printf("---------------------------------------------------\n");
-}
-
-
-void menuacotado(int x, int atendidos, int se_fueron, int contador[]){
-// son 32 lineas en tu lap
-    reporteFinal_menu();
-    printf(" Clientes generados: %d\n", x);
-    printf("   VIP: %d\n", contador[0]);
-    printf("   Nuevos: %d\n", contador[1]);
-    printf("   Normales: %d\n", contador[2]);
-    printf(" Clientes atendidos: %d\n", atendidos);
-    printf(" Clientes que se fueron: %d\n", se_fueron);
-    for(int i=1;i<=8;i++){
-        printf("\n");
-    }
 }
