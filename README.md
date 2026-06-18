@@ -44,7 +44,8 @@ gcc SISTEMAFILABANCOV2.c -o simulador_banco.exe
 # 4. Ejecutar el simulador
 simulador_banco.exe
 
-```
+<img width="1002" height="351" alt="image" src="https://github.com/user-attachments/assets/5e602931-de48-498b-9aaa-edc57865cd44" />
+
 
 
 Proyecto Integrador desarrollado en la **Universidad del Valle de México (UVM) - Campus Reforma**, para la carrera de Ingeniería en Sistemas Computacionales, cursando el segundo semestre en Lógica y Programación Estructurada, impartida por el profesor César Antonio Rios Olivares.
