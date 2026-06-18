@@ -125,9 +125,21 @@ int main()
             se_fue[i] = 0;                                                                 // Inicializa el estado como NO se ha ido.
             caja_asignada[i] = 0;                                                          // Indica que todavía no tiene caja asignada.
 
-            tipo_rand = (rand() % 3) + 1;                                                  // Genera un número aleatorio entre 1 y 3.
-            tipo[i] = tipo_rand;                                                           // Guarda el tipo generado dentro del cliente actual.
-            valores_tipo(i,tipo_rand, cont_tipo,id_num,t_atencion);                        // Llama a la función que asigna características del cliente
+            int prob = rand() % 100;
+
+            if (prob < 20)
+                tipo_rand = 1;      // VIP 20%
+            else if (prob < 50)
+                tipo_rand = 2;      // NUEVO 30%
+            else
+                tipo_rand = 3;      // FRECUENTE 50%
+
+            tipo[i] = tipo_rand;
+            valores_tipo(i,tipo_rand, cont_tipo,id_num,t_atencion);
+
+            //tipo_rand = (rand() % 3) + 1;                                                  // Genera un número aleatorio entre 1 y 3.
+            //tipo[i] = tipo_rand;                                                           // Guarda el tipo generado dentro del cliente actual.
+            //valores_tipo(i,tipo_rand, cont_tipo,id_num,t_atencion);                        // Llama a la función que asigna características del cliente
 
             tam_cola = tam_cola + 1;                                                       // Incrementa el tamaño de la cola.
             cola[tam_cola] = i;                                                            // Inserta el cliente al final de la cola.
@@ -616,4 +628,19 @@ printf("| $$_____/| $$      | $$      | $$  | $$| $$      \n");
 printf("|  $$$$$$$| $$      | $$      |  $$$$$$/| $$      \n");
 printf(" \\_______/|__/      |__/       \\______/ |__/      \n");
 printf("---------------------------------------------------\n");
+}
+
+
+void menuacotado(int x, int atendidos, int se_fueron, int contador[]){
+// son 32 lineas en tu lap
+    reporteFinal_menu();
+    printf(" Clientes generados: %d\n", x);
+    printf("   VIP: %d\n", contador[0]);
+    printf("   Nuevos: %d\n", contador[1]);
+    printf("   Normales: %d\n", contador[2]);
+    printf(" Clientes atendidos: %d\n", atendidos);
+    printf(" Clientes que se fueron: %d\n", se_fueron);
+    for(int i=1;i<=8;i++){
+        printf("\n");
+    }
 }
