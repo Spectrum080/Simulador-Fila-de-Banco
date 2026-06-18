@@ -253,9 +253,9 @@ int main()
         for(int i=0; i< 2; i++){
             printf("\n");
         }
-        printf("ELIGE LA OPCION PARA ANALIZAR ...\n\n");
+        printf("ELIGE LA OPCION PARA ANALIZAR ...\n");
+        printf("SOLO PUEDE INGRESAR VALORES DE ENTRE (1-6)\n\n");
         printf(" 1)VIP\n 2)NUEVOS\n 3)FRECUENTES\n 4)REPORTE FINAL\n 5)CREDITOS\n 6)SALIR\n\n");
-        printf("SELECCIONE UNA OPCION ENTRE 1-6: ");
 
         opc=-1;
         scanf("%d", &opc);
@@ -375,12 +375,21 @@ int main()
             system("color 07");
             cambiaColorTexto(15,0);
             printf("=====================CREDITOS=====================\n\n");
-            printf("Gutierrez Cardenas Carlos Jose: Lider del equipo \n\n");
-            printf("Luna Monroy Victor Hugo: Especialista de logica \n\n");
-            printf("Esparragoza Morales Seth Carlos: Desarrollador de interfaz \n\n");
-            printf("Rodriguez Chua Santiago Antonio: Aanalista de datos\n\n");
-            printf("Velasco Hernandez Omar: Desarrollador de interfaz \n\n");
-            printf("Tapia Perez Jorge Arturo: Especialista de logica  \n\n");
+         
+            printf("==LIDER DE EQUIPO==\n\n");
+            printf(" CARLOS JOSE GUTIERREZ CARDENAS \n Matricula: 010223638\n\n");
+
+            printf("\n==ESPECIALISTA DE LOGICA==\n\n");
+            printf(" VICTOR HUGO LUNA MONROY \n Matricula: 010219783\n\n");
+            printf(" JORGE ARTURO TAPIA PEREZ \n Matricula: 0102240644\n\n");
+
+            printf("\n==ANALISTA DE DATOS==\n\n");
+            printf(" SANTIAGO ANTONIO RODRIGUEZ CHUA \n Matricula: 010224172\n\n");
+
+            printf("\n==DESARROLLADOR DE INTERFAZ==\n\n");
+            printf(" SETH CARLOS ESPARRAGOZA MORALES \n Matricula: 010223617\n\n");
+            printf(" OMAR VELASCO HERNANDEZ \n Matricula: 010224137\n\n");
+         
             printf("===================================================\n");
             system("pause");
             break;
@@ -395,8 +404,8 @@ int main()
             cambiaColorTexto(12,15);
             //Mensaje de ERROR en caso de que el usuario se equivoque al ingresar la opcion
             error();
-            printf("INGERSO UNA OPCION NO VALIDA \n");
-            printf("OPCIONES VALIDAS (1-6) \n" );
+            printf("\nOPCION NO VALIDA \n");
+            printf("SOLO PUEDE INGRESAR VALORES DE ENTRE (1-6)\n\n");
             system("pause");
             break;
         }
