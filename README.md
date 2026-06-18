@@ -27,6 +27,8 @@ Proyecto Integrador desarrollado en la **Universidad del Valle de México (UVM) 
 
 ##  Compilación y Ejecución
 
+<img width="1002" height="351" alt="image" src="https://github.com/user-attachments/assets/b227f84c-b07c-45e0-bb29-c006ae0c3fe4" />
+
 El código fuente está contenido en un único archivo, lo que facilita su portabilidad. Requiere un compilador de C estándar (como GCC o MinGW en Windows).
 
 ### Desde la terminal (Windows):
@@ -43,8 +45,6 @@ gcc SISTEMAFILABANCOV2.c -o simulador_banco.exe
 
 # 4. Ejecutar el simulador
 simulador_banco.exe
-
-<img width="1002" height="351" alt="image" src="https://github.com/user-attachments/assets/5e602931-de48-498b-9aaa-edc57865cd44" />
 
 
 
