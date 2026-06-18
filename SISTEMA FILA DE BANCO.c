@@ -141,7 +141,6 @@ int main()
                     j = 0;                                                                 // Si ya está en orden correcto, se detiene el ciclo.
                 }
             }
-            printf("  [LLEGO] Cliente tipo %d ID: %d\n", tipo[i], id_num[i]);              // Muestra que un cliente ha llegado al sistema.
         }
 
         for (j = 1; j <= tam_cola; j++) {                                                  // Recorre uno por uno todos los clientes que están actualmente en la fila.
@@ -162,7 +161,6 @@ int main()
             if (caja_libre[c] == 0 && reloj >= fin_atencion[c]) {                          // Verifica si la caja está ocupada y ya terminó el tiempo de atención.
                 atendido[cliente_en_caja[c]] = 1;                                          // Marca al cliente como atendido.
                 t_salida[cliente_en_caja[c]] = reloj;                                      // Guarda el minuto exacto en que el cliente salió del sistema.
-                printf("  [ATENDIDO] Caja %d - ID: %d\n", c, id_num[cliente_en_caja[c]]);  // Muestra en pantalla qué caja terminó y qué cliente fue atendido.
                 caja_libre[c] = 1;                                                         // Libera la caja para que pueda atender a otro cliente.
             }
         }
@@ -175,8 +173,6 @@ int main()
                 caja_libre[c] = 0;                                                         // Marca la caja como ocupada.
                 caja_asignada[cliente_en_caja[c]] = c;                                     // Registra en qué caja fue atendido el cliente.
 
-                printf("  [EN CAJA %d] ID: %d\n", c, id_num[cliente_en_caja[c]]);          // Muestra en pantalla que el cliente ya está siendo atendido.
-
                 for (j = 1; j <= tam_cola - 1; j++) {                                      // Desplaza la cola hacia adelante para eliminar al cliente que ya entró a caja.
                     cola[j] = cola[j + 1];
                 }
@@ -184,7 +180,6 @@ int main()
             }
         }
 
-        printf("  Cola actual: %d\n", tam_cola);                                           // Muestra cuántos clientes quedan actualmente en la fila.
         reloj = reloj + 1;                                                                 // Avanza el tiempo del sistema en 1 unidad (1 minuto).
 
     } while (reloj <= tiempo_max);                                                         // El bucle se repite mientras el reloj (tiempo actual) sea menor o igual al tiempo máximo definido.
@@ -459,19 +454,16 @@ void Alguien_se_va(int j,int espera_act,int cola[],int tipo[],int se_fue[],int i
     // VIP: Poca paciencia (se van a los 8 minutos)
     if (tipo[cola[j]] == 1 && espera_act >= 8) {
         se_fue[cola[j]] = 1;
-        printf("  [SE FUE] VIP ID: %d\n", id_num[cola[j]]);
         return;
     } else {
         if (tipo[cola[j]] == 2 && espera_act >= 6) {
                 // NUEVOS: Menos paciencia (se van a los 6 minutos)
             se_fue[cola[j]] = 1;
-            printf("  [SE FUE] NUEVO ID: %d\n", id_num[cola[j]]);
             return;
         } else {
             if (tipo[cola[j]] == 3 && espera_act >= 10) {
                 // FRECUENTE: Más tolerancia (se van hasta los 10 minutos)
                 se_fue[cola[j]] = 1;
-                printf("  [SE FUE] NORMAL ID: %d\n", id_num[cola[j]]);
                 return;
             }
         }
