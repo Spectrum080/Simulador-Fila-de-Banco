@@ -377,18 +377,18 @@ int main()
             printf("=====================CREDITOS=====================\n\n");
          
             printf("==LIDER DE EQUIPO==\n\n");
-            printf(" CARLOS JOSE GUTIERREZ CARDENAS \n Matricula: 010223638\n\n");
+            printf(" Carlos Jose Gutierrez Cardenas \n Matricula: 010223638\n\n");
 
             printf("\n==ESPECIALISTA DE LOGICA==\n\n");
-            printf(" VICTOR HUGO LUNA MONROY \n Matricula: 010219783\n\n");
-            printf(" JORGE ARTURO TAPIA PEREZ \n Matricula: 0102240644\n\n");
+            printf(" Victor Hugo Luna Monroy \n Matricula: 010219783\n\n");
+            printf(" Jorge Arturo Tapia Perez \n Matricula: 0102240644\n\n");
 
             printf("\n==ANALISTA DE DATOS==\n\n");
-            printf(" SANTIAGO ANTONIO RODRIGUEZ CHUA \n Matricula: 010224172\n\n");
+            printf(" Santiago Antonio Rodriguez Chua \n Matricula: 010224172\n\n");
 
             printf("\n==DESARROLLADOR DE INTERFAZ==\n\n");
-            printf(" SETH CARLOS ESPARRAGOZA MORALES \n Matricula: 010223617\n\n");
-            printf(" OMAR VELASCO HERNANDEZ \n Matricula: 010224137\n\n");
+            printf(" Seth Carlos Esparragoza Morales \n Matricula: 010223617\n\n");
+            printf(" Omar Velasco Hernandez \n Matricula: 010224137\n\n");
          
             printf("===================================================\n");
             system("pause");
